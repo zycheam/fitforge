@@ -53,7 +53,7 @@ body {
 /* Hero */
 .hero { padding: 160px 0 100px; position: relative; overflow: hidden; }
 .hero::before { content: ''; position: absolute; top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
-.hero::after { content: ''; position: absolute; bottom: -10%; left: -5%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+.hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 80%, rgba(34,197,94,0.04) 0%, transparent 50%); pointer-events: none; }
 .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; position: relative; z-index: 1; }
 .hero-tag { display: inline-block; background: rgba(249,115,22,0.15); color: var(--color-primary); font-size: 0.875rem; font-weight: 600; padding: 6px 16px; border-radius: 999px; margin-bottom: 24px; }
 .hero h1 { font-family: var(--font-heading); font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 800; color: var(--color-foreground); line-height: 1.05; letter-spacing: -1px; margin-bottom: 24px; }
@@ -74,7 +74,7 @@ body {
 /* Section */
 .section { padding: 100px 0; }
 .section-header { text-align: center; margin-bottom: 64px; }
-.section-tag { display: inline-block; background: rgba(249,115,22,0.12); color: var(--color-primary); font-size: 0.8125rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; margin-bottom: 16px; }
+
 .section h2 { font-family: var(--font-heading); font-size: clamp(2.25rem, 4vw, 3rem); font-weight: 700; color: var(--color-foreground); letter-spacing: -0.5px; margin-bottom: 16px; }
 .section-desc { color: var(--color-text-muted); font-size: 1.063rem; max-width: 560px; margin: 0 auto; }
 
@@ -175,6 +175,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Focus visible ring for keyboard navigation */
+button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 </style>
 </head>
 <body>
@@ -228,7 +235,6 @@ body {
 <section class="section" id="features">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">核心功能</div>
       <h2>科学训练所需的一切</h2>
       <p class="section-desc">从计划生成到动作纠正，FitForge 覆盖你健身旅程的每一个环节</p>
     </div>
@@ -269,25 +275,24 @@ body {
 
 <section class="section" id="how" style="background:rgba(249,115,22,0.02)">
   <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">使用流程</div>
+    <div class="section-header">
       <h2>三步开启科学训练</h2>
       <p class="section-desc">从下载到第一次训练，只需 5 分钟</p>
     </div>
     <div class="steps">
-      <div class="step reveal">
+      <div class="step">
         <div class="step-num">1</div>
         <h3>设定目标</h3>
         <p>选择增肌、减脂或力量，输入你的训练经验和可用器械</p>
         <div class="step-connector"></div>
       </div>
-      <div class="step reveal" style="transition-delay:150ms">
+      <div class="step" style="transition-delay:150ms">
         <div class="step-num">2</div>
         <h3>获取计划</h3>
         <p>AI 在 30 秒内生成个性化周训练计划，支持随时调整</p>
         <div class="step-connector"></div>
       </div>
-      <div class="step reveal" style="transition-delay:300ms">
+      <div class="step" style="transition-delay:300ms">
         <div class="step-num">3</div>
         <h3>开始训练</h3>
         <p>跟随指导完成训练，AI 实时纠正动作并记录全部数据</p>
@@ -298,7 +303,7 @@ body {
 
 <section class="section">
   <div class="container">
-    <div class="stats-bar reveal">
+    <div class="stats-bar">
       <div class="stat-item"><div class="big">50K+</div><div class="lbl">活跃用户</div></div>
       <div class="stat-item"><div class="big">2.3M</div><div class="lbl">训练完成</div></div>
       <div class="stat-item"><div class="big">98%</div><div class="lbl">用户满意度</div></div>
@@ -309,13 +314,12 @@ body {
 
 <section class="section" id="pricing" style="background:rgba(249,115,22,0.02)">
   <div class="container">
-    <div class="section-header reveal">
-      <div class="section-tag">定价方案</div>
+    <div class="section-header">
       <h2>选择适合你的计划</h2>
       <p class="section-desc">所有方案均包含 14 天免费试用，无需信用卡</p>
     </div>
     <div class="pricing-grid">
-      <div class="pricing-card reveal">
+      <div class="pricing-card">
         <h3>入门版</h3>
         <div class="price">¥0<span>/月</span></div>
         <div class="period">永久免费</div>
@@ -326,7 +330,7 @@ body {
         </ul>
         <button class="btn-outline" style="width:100%" onclick="location.href='index.html'">免费开始</button>
       </div>
-      <div class="pricing-card featured reveal" style="transition-delay:150ms">
+      <div class="pricing-card featured" style="transition-delay:150ms">
         <h3>专业版</h3>
         <div class="price">¥49<span>/月</span></div>
         <div class="period">年付 ¥468（省 ¥120）</div>
@@ -339,7 +343,7 @@ body {
         </ul>
         <button class="btn-primary">开始 14 天试用</button>
       </div>
-      <div class="pricing-card reveal" style="transition-delay:300ms">
+      <div class="pricing-card" style="transition-delay:300ms">
         <h3>团队版</h3>
         <div class="price">¥99<span>/月</span></div>
         <div class="period">最多 10 名成员</div>
@@ -357,7 +361,7 @@ body {
 
 <section class="cta">
   <div class="container">
-    <div class="cta-inner reveal">
+    <div class="cta-inner">
       <h2>准备好锻造全新的自己了吗？</h2>
       <p>加入 50,000+ 用户，用 AI 驱动你的每一次训练。14 天免费试用，随时取消。</p>
       <div class="cta-actions">
@@ -396,3 +400,5 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 </body>
 </html>
+
+.feature-card:nth-child(5), .feature-card:nth-child(6) { animation: none; opacity: 1; transform: none; }

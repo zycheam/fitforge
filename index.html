@@ -72,7 +72,7 @@ body {
 .filter-chip {
   padding: 10px 14px; min-height: 44px; border-radius: 999px; font-size: 0.6875rem; font-weight: 500;
   border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
-  cursor: pointer; transition: all var(--transition); font-family: var(--font-body); white-space: nowrap;
+  cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); white-space: nowrap;
 }
 .filter-chip:hover { border-color: var(--color-primary); color: var(--color-foreground); }
 .filter-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
@@ -82,7 +82,7 @@ body {
 .muscle-chip {
   padding: 10px 14px; min-height: 44px; border-radius: var(--radius-sm); font-size: 0.6875rem; font-weight: 500;
   border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
-  cursor: pointer; transition: all var(--transition); font-family: var(--font-body); text-align: center;
+  cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); text-align: center;
 }
 .muscle-chip:hover { border-color: var(--color-primary); color: var(--color-foreground); }
 .muscle-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
@@ -93,12 +93,12 @@ body {
 .results-count span { color: var(--color-primary); }
 
 /* Share Button */
-.btn-share { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--color-border); color: var(--color-text-muted); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-share { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--color-border); color: var(--color-text-muted); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); }
 .btn-share:hover { border-color: var(--color-primary); color: var(--color-foreground); }
 .btn-share svg { width: 15px; height: 15px; }
 
 .view-toggle { display: flex; gap: 3px; background: var(--color-bg-card); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--color-border); }
-.view-toggle button { padding: 5px 10px; border: none; background: transparent; color: var(--color-text-muted); border-radius: 5px; cursor: pointer; font-size: 0.75rem; font-family: var(--font-body); transition: all var(--transition); }
+.view-toggle button { padding: 5px 10px; border: none; background: transparent; color: var(--color-text-muted); border-radius: 5px; cursor: pointer; font-size: 0.75rem; font-family: var(--font-body); transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); }
 .view-toggle button.active { background: var(--color-primary); color: var(--color-bg); }
 
 .sort-select { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 7px 10px; color: var(--color-foreground); font-size: 0.75rem; font-family: var(--font-body); outline: none; cursor: pointer; }
@@ -111,7 +111,7 @@ body {
   background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius);
   overflow: hidden; cursor: pointer; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
-.exercise-card:hover { transform: translateY(-3px); border-color: var(--color-primary); box-shadow: 0 10px 32px rgba(249,115,22,0.08); }
+.exercise-card:hover { transform: translateY(-3px); border-color: var(--color-primary); box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
 .exercise-card .card-img { height: 160px; background: var(--color-surface); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .exercise-card .card-img img { width: 100%; height: 100%; object-fit: cover; }
 .exercise-card .card-img .placeholder { color: var(--color-text-muted); font-size: 2.5rem; opacity: 0.25; }
@@ -146,7 +146,7 @@ body {
   transform: translateY(20px); transition: transform 250ms ease;
 }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-close { position: sticky; top: 14px; float: right; z-index: 10; width: 34px; height: 34px; border-radius: 50%; background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-foreground); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; margin-right: 14px; transition: all var(--transition); }
+.modal-close { position: sticky; top: 14px; float: right; z-index: 10; width: 34px; height: 34px; border-radius: 50%; background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-foreground); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; margin-right: 14px; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); }
 .modal-close:hover { background: var(--color-destructive); border-color: var(--color-destructive); }
 .modal-content { padding: 28px; padding-top: 0; }
 .modal-images { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
@@ -163,7 +163,7 @@ body {
 .modal-muscles .muscle-tag { padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; background: rgba(249,115,22,0.1); color: var(--color-secondary); border: 1px solid rgba(249,115,22,0.2); }
 .modal-muscles .muscle-tag.secondary { background: rgba(100,116,139,0.1); color: var(--color-text-muted); border-color: rgba(100,116,139,0.2); }
 .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); }
-.btn-add-plan { background: var(--color-primary); color: var(--color-bg); border: none; padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-add-plan { background: var(--color-primary); color: var(--color-bg); border: none; padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition); font-family: var(--font-body); }
 .btn-add-plan:hover { background: var(--color-secondary); transform: translateY(-1px); }
 .btn-add-plan.added { background: var(--color-accent); }
 
@@ -186,7 +186,7 @@ body {
 .share-modal .qr-wrap canvas, .share-modal .qr-wrap img { border-radius: var(--radius-sm); background: #fff; padding: 12px; }
 .share-modal .share-hint { color: var(--color-text-muted); font-size: 0.75rem; margin-top: 12px; }
 .share-modal .share-url { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 10px; color: var(--color-text); font-size: 0.75rem; word-break: break-all; margin: 12px 0; text-align: left; max-height: 80px; overflow-y: auto; }
-.btn-copy { background: var(--color-primary); color: var(--color-bg); border: none; padding: 8px 20px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-copy { background: var(--color-primary); color: var(--color-bg); border: none; padding: 8px 20px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition); font-family: var(--font-body); }
 .btn-copy:hover { background: var(--color-secondary); }
 .btn-copy.copied { background: var(--color-accent); }
 
@@ -195,7 +195,7 @@ body {
 .planner-panel.active { display: block; }
 .planner-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
 .planner-day-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
-.planner-day-tab { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.planner-day-tab { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); }
 .planner-day-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
 .planner-routine { display: flex; flex-direction: column; gap: 10px; }
 .planner-exercise {
@@ -218,14 +218,14 @@ body {
 .planner-empty svg { width: 56px; height: 56px; stroke: var(--color-muted); margin-bottom: 12px; }
 .planner-empty h3 { font-family: var(--font-heading); font-size: 1.125rem; color: var(--color-foreground); margin-bottom: 6px; }
 .planner-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-.btn-outline { background: transparent; color: var(--color-foreground); border: 2px solid var(--color-border); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-outline { background: transparent; color: var(--color-foreground); border: 2px solid var(--color-border); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); }
 .btn-outline:hover { border-color: var(--color-primary); color: var(--color-primary); }
-.btn-danger { background: transparent; color: var(--color-destructive); border: 2px solid rgba(239,68,68,0.3); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-danger { background: transparent; color: var(--color-destructive); border: 2px solid rgba(239,68,68,0.3); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); }
 .btn-danger:hover { background: var(--color-destructive); color: #fff; }
 
 /* Pagination */
 .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 28px; flex-wrap: wrap; }
-.pagination button { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.pagination button { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); }
 .pagination button:hover { border-color: var(--color-primary); color: var(--color-foreground); }
 .pagination button.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
 .pagination button:disabled { opacity: 0.35; cursor: not-allowed; color: var(--color-text-muted); }
@@ -234,8 +234,8 @@ body {
 .toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 400;
   background: var(--color-accent); color: var(--color-bg); padding: 10px 22px; border-radius: var(--radius-sm);
-  font-weight: 600; font-size: 0.8125rem; opacity: 0; transition: all 300ms ease;
-  box-shadow: 0 6px 24px rgba(34,197,94,0.3); white-space: nowrap;
+  font-weight: 600; font-size: 0.8125rem; opacity: 0; transition: opacity 300ms ease, transform 300ms ease;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.5); white-space: nowrap;
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -290,22 +290,20 @@ body {
 /* Animations */
 
 /* P1-4: 尊重用户的减少动画偏好 */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  .exercise-card, .filter-chip, .muscle-chip, .btn-add-plan, .btn-copy,
-  .nav-cta, .planner-day-tab, .pagination button, .view-toggle button {
-    transform: none !important;
-  }
-}
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-in { animation: fadeInUp 0.35s ease forwards; }
+
+/* Focus visible ring for keyboard navigation */
+button:focus-visible, a:focus-visible, .filter-chip:focus-visible, .muscle-chip:focus-visible,
+.view-toggle button:focus-visible, .pagination button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 </style>
 <script src="exercises_data.js" defer></script></head>
 <body>
@@ -864,7 +862,6 @@ function showToast(msg){
 }
 
 // ===== INIT =====
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeShareModal();}});
 loadData(); updatePlanBadge(); loadSharedPlan();
 </script>
 </body>
