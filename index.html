@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FitForge — 动作库 & 健身教练</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --color-primary: #F97316;
+  --color-secondary: #FB923C;
+  --color-accent: #22C55E;
+  --color-bg: #0F172A;
+  --color-bg-card: #1E293B;
+  --color-surface: #1F2937;
+  --color-muted: #37414F;
+  --color-border: #334155;
+  --color-foreground: #F8FAFC;
+  --color-text: #E2E8F0;
+  --color-text-muted: #94A3B8;
+  --color-destructive: #EF4444;
+  --font-heading: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --radius: 16px;
+  --radius-sm: 8px;
+  --transition: 200ms ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Nav */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(15,23,42,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--color-border); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+.nav-logo { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); letter-spacing: -1px; text-decoration: none; }
+.nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+.nav-links button { color: var(--color-text-muted); font-size: 0.875rem; font-weight: 500; transition: color var(--transition); background: none; border: none; cursor: pointer; font-family: var(--font-body); white-space: nowrap; }
+.nav-links button:hover { color: var(--color-foreground); }
+.nav-links button.active { color: var(--color-primary); }
+.nav-cta { background: var(--color-accent); color: #fff; border: none; padding: 8px 18px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.8125rem; cursor: pointer; transition: transform var(--transition); font-family: var(--font-body); white-space: nowrap; }
+.nav-cta:hover { transform: translateY(-2px); }
+.nav-cta .badge { background: rgba(255,255,255,0.25); border-radius: 999px; padding: 1px 7px; margin-left: 5px; font-size: 0.6875rem; }
+
+/* App Layout */
+.app-layout { display: flex; padding-top: 64px; min-height: 100vh; }
+.sidebar { width: 260px; background: var(--color-bg-card); border-right: 1px solid var(--color-border); padding: 20px 14px; position: fixed; top: 64px; bottom: 0; overflow-y: auto; z-index: 50; }
+.main-content { flex: 1; margin-left: 260px; padding: 20px 28px 60px; }
+
+/* Search */
+.search-wrap { position: relative; margin-bottom: 20px; }
+.search-wrap input {
+  width: 100%; background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: 9px 10px 9px 36px; color: var(--color-foreground);
+  font-size: 0.8125rem; font-family: var(--font-body); outline: none; transition: border-color var(--transition);
+}
+.search-wrap input:focus { border-color: var(--color-primary); }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--color-text-muted); }
+
+/* Filter Section */
+.filter-section { margin-bottom: 18px; }
+.filter-title { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.filter-chip {
+  padding: 4px 10px; border-radius: 999px; font-size: 0.6875rem; font-weight: 500;
+  border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-body); white-space: nowrap;
+}
+.filter-chip:hover { border-color: var(--color-primary); color: var(--color-foreground); }
+.filter-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+
+/* Muscle Grid */
+.muscle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.muscle-chip {
+  padding: 6px 8px; border-radius: var(--radius-sm); font-size: 0.6875rem; font-weight: 500;
+  border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-body); text-align: center;
+}
+.muscle-chip:hover { border-color: var(--color-primary); color: var(--color-foreground); }
+.muscle-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+
+/* Results Header */
+.results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.results-count { font-family: var(--font-heading); font-size: 1.375rem; font-weight: 700; color: var(--color-foreground); }
+.results-count span { color: var(--color-primary); }
+
+/* Share Button */
+.btn-share { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--color-border); color: var(--color-text-muted); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-share:hover { border-color: var(--color-primary); color: var(--color-foreground); }
+.btn-share svg { width: 15px; height: 15px; }
+
+.view-toggle { display: flex; gap: 3px; background: var(--color-bg-card); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--color-border); }
+.view-toggle button { padding: 5px 10px; border: none; background: transparent; color: var(--color-text-muted); border-radius: 5px; cursor: pointer; font-size: 0.75rem; font-family: var(--font-body); transition: all var(--transition); }
+.view-toggle button.active { background: var(--color-primary); color: #fff; }
+
+.sort-select { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 7px 10px; color: var(--color-foreground); font-size: 0.75rem; font-family: var(--font-body); outline: none; cursor: pointer; }
+
+/* Exercise Grid */
+.exercise-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.exercise-grid.list { grid-template-columns: 1fr; }
+
+.exercise-card {
+  background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius);
+  overflow: hidden; cursor: pointer; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.exercise-card:hover { transform: translateY(-3px); border-color: var(--color-primary); box-shadow: 0 10px 32px rgba(249,115,22,0.08); }
+.exercise-card .card-img { height: 160px; background: var(--color-surface); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.exercise-card .card-img img { width: 100%; height: 100%; object-fit: cover; }
+.exercise-card .card-img .placeholder { color: var(--color-text-muted); font-size: 2.5rem; opacity: 0.25; }
+.exercise-card .card-body { padding: 16px; }
+.exercise-card .card-body h3 { font-family: var(--font-heading); font-size: 1.0625rem; font-weight: 600; color: var(--color-foreground); margin-bottom: 6px; line-height: 1.3; }
+.exercise-card .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.exercise-card .card-tags .tag { padding: 2px 8px; border-radius: 999px; font-size: 0.625rem; font-weight: 600; border: 1px solid transparent; }
+.tag-level-beginner { background: rgba(34,197,94,0.12); color: #22C55E; border-color: rgba(34,197,94,0.25) !important; }
+.tag-level-intermediate { background: rgba(249,115,22,0.12); color: #F97316; border-color: rgba(249,115,22,0.25) !important; }
+.tag-level-expert { background: rgba(239,68,68,0.12); color: #EF4444; border-color: rgba(239,68,68,0.25) !important; }
+.tag-category { background: rgba(139,92,246,0.1); color: #A78BFA; }
+.tag-equipment { background: rgba(14,165,233,0.1); color: #38BDF8; }
+.card-muscles { display: flex; flex-wrap: wrap; gap: 3px; }
+.card-muscles span { padding: 2px 7px; border-radius: 999px; font-size: 0.625rem; background: rgba(249,115,22,0.08); color: var(--color-secondary); }
+
+/* List View */
+.exercise-card.list-view { display: flex; }
+.exercise-card.list-view .card-img { width: 180px; height: auto; min-height: 130px; flex-shrink: 0; }
+.exercise-card.list-view .card-body { flex: 1; }
+.exercise-card.list-view .card-instructions { color: var(--color-text-muted); font-size: 0.75rem; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; visibility: hidden; transition: opacity 250ms ease, visibility 250ms ease;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal {
+  background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius);
+  max-width: 750px; width: 100%; max-height: 88vh; overflow-y: auto;
+  transform: translateY(20px); transition: transform 250ms ease;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-close { position: sticky; top: 14px; float: right; z-index: 10; width: 34px; height: 34px; border-radius: 50%; background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-foreground); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; margin-right: 14px; transition: all var(--transition); }
+.modal-close:hover { background: var(--color-destructive); border-color: var(--color-destructive); }
+.modal-content { padding: 28px; padding-top: 0; }
+.modal-images { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.modal-images img { width: 100%; border-radius: var(--radius-sm); background: var(--color-surface); }
+.modal h2 { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 700; color: var(--color-foreground); margin-bottom: 12px; }
+.modal .meta-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.modal .meta-badge { padding: 5px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.modal-section { margin-bottom: 20px; }
+.modal-section h3 { font-family: var(--font-heading); font-size: 1.125rem; font-weight: 600; color: var(--color-foreground); margin-bottom: 10px; }
+.modal-section ol { padding-left: 18px; }
+.modal-section ol li { color: var(--color-text); margin-bottom: 7px; font-size: 0.875rem; line-height: 1.7; }
+.modal-section ol li::marker { color: var(--color-primary); font-weight: 600; }
+.modal-muscles { display: flex; flex-wrap: wrap; gap: 6px; }
+.modal-muscles .muscle-tag { padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; background: rgba(249,115,22,0.1); color: var(--color-secondary); border: 1px solid rgba(249,115,22,0.2); }
+.modal-muscles .muscle-tag.secondary { background: rgba(100,116,139,0.1); color: var(--color-text-muted); border-color: rgba(100,116,139,0.2); }
+.modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+.btn-add-plan { background: var(--color-primary); color: #fff; border: none; padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-add-plan:hover { background: var(--color-secondary); transform: translateY(-1px); }
+.btn-add-plan.added { background: var(--color-accent); }
+
+/* Share Modal */
+.share-modal-overlay {
+  position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; visibility: hidden; transition: opacity 250ms ease, visibility 250ms ease;
+}
+.share-modal-overlay.open { opacity: 1; visibility: visible; }
+.share-modal {
+  background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius);
+  max-width: 420px; width: 100%; padding: 32px; text-align: center;
+  transform: translateY(20px); transition: transform 250ms ease;
+}
+.share-modal-overlay.open .share-modal { transform: translateY(0); }
+.share-modal h3 { font-family: var(--font-heading); font-size: 1.375rem; color: var(--color-foreground); margin-bottom: 8px; }
+.share-modal p { color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 20px; }
+.share-modal .qr-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+.share-modal .qr-wrap canvas, .share-modal .qr-wrap img { border-radius: var(--radius-sm); background: #fff; padding: 12px; }
+.share-modal .share-hint { color: var(--color-text-muted); font-size: 0.75rem; margin-top: 12px; }
+.share-modal .share-url { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 10px; color: var(--color-text); font-size: 0.75rem; word-break: break-all; margin: 12px 0; text-align: left; max-height: 80px; overflow-y: auto; }
+.btn-copy { background: var(--color-primary); color: #fff; border: none; padding: 8px 20px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-copy:hover { background: var(--color-secondary); }
+.btn-copy.copied { background: var(--color-accent); }
+
+/* Planner */
+.planner-panel { display: none; }
+.planner-panel.active { display: block; }
+.planner-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.planner-day-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
+.planner-day-tab { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.planner-day-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.planner-routine { display: flex; flex-direction: column; gap: 10px; }
+.planner-exercise {
+  display: flex; align-items: center; gap: 14px; background: var(--color-bg-card);
+  border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 14px;
+  transition: border-color var(--transition); flex-wrap: wrap;
+}
+.planner-exercise:hover { border-color: var(--color-primary); }
+.planner-exercise .ex-num { width: 30px; height: 30px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem; color: #fff; flex-shrink: 0; }
+.planner-exercise .ex-info { flex: 1; min-width: 120px; }
+.planner-exercise .ex-info h4 { font-size: 0.875rem; color: var(--color-foreground); margin-bottom: 2px; }
+.planner-exercise .ex-info .ex-meta { font-size: 0.6875rem; color: var(--color-text-muted); }
+.planner-exercise .ex-sets { display: flex; gap: 6px; align-items: center; }
+.planner-exercise .ex-sets input { width: 48px; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 5px 6px; color: var(--color-foreground); text-align: center; font-size: 0.75rem; font-family: var(--font-body); outline: none; }
+.planner-exercise .ex-sets input:focus { border-color: var(--color-primary); }
+.planner-exercise .ex-sets label { font-size: 0.625rem; color: var(--color-text-muted); }
+.planner-exercise .ex-remove { background: none; border: none; color: var(--color-text-muted); cursor: pointer; font-size: 1.125rem; padding: 3px 6px; transition: color var(--transition); }
+.planner-exercise .ex-remove:hover { color: var(--color-destructive); }
+.planner-empty { text-align: center; padding: 50px 16px; color: var(--color-text-muted); }
+.planner-empty svg { width: 56px; height: 56px; stroke: var(--color-muted); margin-bottom: 12px; }
+.planner-empty h3 { font-family: var(--font-heading); font-size: 1.125rem; color: var(--color-foreground); margin-bottom: 6px; }
+.planner-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.btn-outline { background: transparent; color: var(--color-foreground); border: 2px solid var(--color-border); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-outline:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.btn-danger { background: transparent; color: var(--color-destructive); border: 2px solid rgba(239,68,68,0.3); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-danger:hover { background: var(--color-destructive); color: #fff; }
+
+/* Pagination */
+.pagination { display: flex; justify-content: center; gap: 6px; margin-top: 28px; flex-wrap: wrap; }
+.pagination button { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.pagination button:hover { border-color: var(--color-primary); color: var(--color-foreground); }
+.pagination button.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.pagination button:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 400;
+  background: var(--color-accent); color: #fff; padding: 10px 22px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: 0.8125rem; opacity: 0; transition: all 300ms ease;
+  box-shadow: 0 6px 24px rgba(34,197,94,0.3); white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-muted); border-radius: 3px; }
+
+/* Loading */
+.loading { display: flex; align-items: center; justify-content: center; padding: 80px 0; flex-direction: column; gap: 14px; }
+.loading .spinner { width: 36px; height: 36px; border: 3px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+.loading p { color: var(--color-text-muted); font-size: 0.8125rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sidebar { width: 100%; position: relative; top: 0; height: auto; max-height: 45vh; border-right: none; border-bottom: 1px solid var(--color-border); padding: 14px 12px; }
+  .main-content { margin-left: 0; padding: 14px; }
+  .app-layout { flex-direction: column; }
+  .modal-images { grid-template-columns: 1fr; }
+  .exercise-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  .exercise-card.list-view { flex-direction: column; }
+  .exercise-card.list-view .card-img { width: 100%; height: 140px; }
+  .nav-inner { padding: 0 12px; }
+  .nav-links { gap: 12px; }
+  .nav-logo { font-size: 1.25rem; }
+  .muscle-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .exercise-grid { grid-template-columns: 1fr; }
+  .nav-links button { font-size: 0.75rem; }
+  .muscle-grid { grid-template-columns: 1fr 1fr; }
+  .planner-exercise { flex-direction: column; align-items: flex-start; }
+  .results-header { flex-direction: column; align-items: flex-start; }
+  .share-modal { margin: 0 10px; padding: 24px 16px; }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeInUp 0.35s ease forwards; }
+</style>
+<script src="exercises_data.js"></script></head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="fitforge-landing.html" class="nav-logo">FITFORGE</a>
+    <ul class="nav-links">
+      <li><button onclick="showBrowser()" id="nav-browse" class="active">动作库</button></li>
+      <li><button onclick="showPlanner()" id="nav-planner">训练计划 <span class="badge" id="plan-count">0</span></button></li>
+      <li><button class="btn-share" onclick="openShareModal()" title="分享训练计划">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        分享
+      </button></li>
+      <li><a href="fitforge-landing.html" style="color:var(--color-text-muted);text-decoration:none;font-size:0.8125rem">首页</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search" placeholder="搜索动作..." oninput="filterAndRender()">
+    </div>
+    <div class="filter-section"><div class="filter-title">分类</div><div class="filter-chips" id="category-filters"></div></div>
+    <div class="filter-section"><div class="filter-title">难度</div><div class="filter-chips" id="level-filters"></div></div>
+    <div class="filter-section"><div class="filter-title">器械</div><div class="filter-chips" id="equipment-filters"></div></div>
+    <div class="filter-section"><div class="filter-title">目标肌群</div><div class="muscle-grid" id="muscle-filters"></div></div>
+  </aside>
+
+  <main class="main-content">
+    <div id="browser-panel">
+      <div class="results-header">
+        <div class="results-count">共 <span id="result-count">0</span> 个动作</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <select class="sort-select" id="sort-select" onchange="filterAndRender()">
+            <option value="name">按名称</option><option value="level">按难度</option><option value="category">按分类</option><option value="equipment">按器械</option>
+          </select>
+          <div class="view-toggle">
+            <button onclick="setView('grid')" id="view-grid" class="active">网格</button>
+            <button onclick="setView('list')" id="view-list">列表</button>
+          </div>
+        </div>
+      </div>
+      <div id="loading" class="loading"><div class="spinner"></div><p>正在加载动作库...</p></div>
+      <div class="exercise-grid" id="exercise-grid"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <div id="planner-panel" class="planner-panel">
+      <div class="planner-header">
+        <div class="results-count">📋 训练计划</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-share" onclick="openShareModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;height:14px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            分享计划
+          </button>
+          <button class="btn-outline" onclick="exportPlan()" style="padding:7px 14px;font-size:0.75rem">导出文本</button>
+        </div>
+      </div>
+      <div class="planner-day-tabs" id="planner-tabs"></div>
+      <div class="planner-routine" id="planner-routine"></div>
+      <div class="planner-actions">
+        <button class="btn-outline" onclick="clearDay()">清空当天</button>
+        <button class="btn-danger" onclick="clearAllPlan()">清空全部计划</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Exercise Detail Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-content" id="modal-content"></div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="share-modal-overlay" id="share-overlay" onclick="if(event.target===this)closeShareModal()">
+  <div class="share-modal">
+    <h3>分享训练计划</h3>
+    <p>下载独立网页文件发送给好友，对方可直接打开查看</p>
+    <div class="qr-wrap" id="qr-code"></div>
+    <div id="share-plan-preview" style="text-align:left;max-height:150px;overflow-y:auto;margin:8px 0;font-size:0.75rem;color:var(--color-text-muted);background:var(--color-bg);border-radius:var(--radius-sm);padding:10px;display:none"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-copy" id="btn-download-share" onclick="downloadShareFile()">下载分享文件</button>
+      <button class="btn-outline" onclick="closeShareModal()" style="padding:8px 20px;font-size:0.8125rem">关闭</button>
+    </div>
+    <div class="share-hint">将下载的 HTML 文件通过微信发送给好友，对方用手机浏览器打开即可查看完整训练计划</div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const IMG_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/master/exercises';
+let allExercises = [], filteredExercises = [];
+let currentPage = 1, PAGE_SIZE = 12, currentView = 'grid';
+let activeFilters = { category: null, level: null, equipment: null, muscle: null };
+let currentDay = 'day1';
+const DAYS = ['day1','day2','day3','day4','day5','day6','day7'];
+const DAY_LABELS = { day1:'周一', day2:'周二', day3:'周三', day4:'周四', day5:'周五', day6:'周六', day7:'周日' };
+
+function getPlan() { try { return JSON.parse(localStorage.getItem('fitforge_plan') || '{}'); } catch(e) { return {}; } }
+function savePlan(plan) { localStorage.setItem('fitforge_plan', JSON.stringify(plan)); updatePlanBadge(); }
+
+// Display name: prefer Chinese
+function displayName(ex) { return ex.name_cn || ex.name; }
+function displayInstructions(ex) { return (ex.instructions_cn && ex.instructions_cn.length > 0) ? ex.instructions_cn : ex.instructions; }
+
+function loadData() {
+  try {
+    if (!window.EXERCISES || !window.EXERCISES.length) throw new Error('数据未加载');
+    allExercises = window.EXERCISES;
+    // Sort by Chinese name if available
+    allExercises.sort((a,b) => (a.name_cn || a.name).localeCompare(b.name_cn || b.name));
+    filteredExercises = [...allExercises];
+    initFilters();
+    renderAll();
+    document.getElementById('loading').style.display = 'none';
+  } catch(e) {
+    document.getElementById('loading').innerHTML = '<p style="color:#EF4444">数据加载失败</p><p style="color:var(--color-text-muted);font-size:0.8125rem;margin-top:6px">请确保 exercises_data.js 与 index.html 在同一目录</p>';
+  }
+}
+
+let categories=[], levels=[], equipments=[], muscles=[];
+
+function initFilters() {
+  const catSet=new Set(), lvlSet=new Set(), eqSet=new Set(), musSet=new Set();
+  allExercises.forEach(ex => {
+    if(ex.category) catSet.add(ex.category);
+    if(ex.level) lvlSet.add(ex.level);
+    if(ex.equipment) eqSet.add(ex.equipment);
+    if(ex.primaryMuscles) ex.primaryMuscles.forEach(m=>musSet.add(m));
+    if(ex.secondaryMuscles) ex.secondaryMuscles.forEach(m=>musSet.add(m));
+  });
+  categories=[...catSet].sort();
+  levels=[...lvlSet].sort((a,b)=>['beginner','intermediate','expert'].indexOf(a)-['beginner','intermediate','expert'].indexOf(b));
+  equipments=[...eqSet].sort();
+  muscles=[...musSet].sort();
+  renderFilterChips('category-filters',categories,'category');
+  renderFilterChips('level-filters',levels,'level');
+  renderFilterChips('equipment-filters',equipments,'equipment');
+  renderMuscleFilters();
+}
+
+function renderFilterChips(id,items,type){
+  document.getElementById(id).innerHTML=items.map(v=>
+    `<button class="filter-chip" data-value="${v}" onclick="toggleFilter('${type}','${v.replace(/'/g,"\\'")}')">${formatLabel(v)}</button>`
+  ).join('');
+}
+
+function renderMuscleFilters(){
+  document.getElementById('muscle-filters').innerHTML=muscles.map(m=>
+    `<button class="muscle-chip" data-value="${m}" onclick="toggleFilter('muscle','${m.replace(/'/g,"\\'")}')">${formatLabel(m)}</button>`
+  ).join('');
+}
+
+function formatLabel(s){
+  if(!s) return '';
+  const map={
+    'beginner':'入门','intermediate':'中级','expert':'高级',
+    'strength':'力量训练','stretching':'拉伸','plyometrics':'增强式','powerlifting':'力量举',
+    'olympic weightlifting':'举重','strongman':'大力士','cardio':'有氧',
+    'body only':'徒手','barbell':'杠铃','dumbbell':'哑铃','cable':'绳索','machine':'器械',
+    'kettlebells':'壶铃','bands':'弹力带','medicine ball':'药球','exercise ball':'健身球',
+    'foam roll':'泡沫轴','e-z curl bar':'曲杠','other':'其他',
+    'abdominals':'腹肌','abductors':'外展肌','adductors':'内收肌','biceps':'肱二头肌',
+    'calves':'小腿','chest':'胸肌','forearms':'前臂','glutes':'臀肌','hamstrings':'腘绳肌',
+    'lats':'背阔肌','lower back':'下背','middle back':'中背','neck':'颈部',
+    'quadriceps':'股四头肌','shoulders':'肩部','traps':'斜方肌','triceps':'肱三头肌',
+    'isolation':'孤立','compound':'复合','static':'静态','pull':'拉力','push':'推力'
+  };
+  return map[s] || s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+}
+
+function toggleFilter(type,value){
+  activeFilters[type]=activeFilters[type]===value?null:value;
+  updateFilterUI(); filterAndRender();
+}
+
+function updateFilterUI(){
+  document.querySelectorAll('.filter-chip,.muscle-chip').forEach(btn=>{
+    const type=btn.closest('#muscle-filters')?'muscle':btn.closest('#category-filters')?'category':btn.closest('#level-filters')?'level':'equipment';
+    btn.classList.toggle('active',activeFilters[type]===btn.dataset.value);
+  });
+}
+
+function filterAndRender(){
+  const search=document.getElementById('search').value.toLowerCase().trim();
+  filteredExercises=allExercises.filter(ex=>{
+    const name=(ex.name_cn||ex.name).toLowerCase();
+    if(search && !name.includes(search) && !ex.name.toLowerCase().includes(search)) return false;
+    if(activeFilters.category && ex.category!==activeFilters.category) return false;
+    if(activeFilters.level && ex.level!==activeFilters.level) return false;
+    if(activeFilters.equipment && ex.equipment!==activeFilters.equipment) return false;
+    if(activeFilters.muscle){
+      const allM=[...(ex.primaryMuscles||[]),...(ex.secondaryMuscles||[])];
+      if(!allM.includes(activeFilters.muscle)) return false;
+    }
+    return true;
+  });
+  const sort=document.getElementById('sort-select').value;
+  filteredExercises.sort((a,b)=>{
+    if(sort==='name') return (a.name_cn||a.name).localeCompare(b.name_cn||b.name);
+    if(sort==='level') return ['beginner','intermediate','expert'].indexOf(a.level||'')-['beginner','intermediate','expert'].indexOf(b.level||'');
+    if(sort==='category') return (a.category||'').localeCompare(b.category||'');
+    if(sort==='equipment') return (a.equipment||'').localeCompare(b.equipment||'');
+    return 0;
+  });
+  currentPage=1; renderAll();
+}
+
+function renderAll(){
+  document.getElementById('result-count').textContent=filteredExercises.length;
+  renderGrid(); renderPagination();
+}
+
+function renderGrid(){
+  const grid=document.getElementById('exercise-grid');
+  const start=(currentPage-1)*PAGE_SIZE;
+  const items=filteredExercises.slice(start,start+PAGE_SIZE);
+  if(!items.length){
+    grid.innerHTML='<div style="text-align:center;padding:60px 16px;color:var(--color-text-muted)"><p style="font-size:1rem">没有匹配的动作</p><p style="font-size:0.8125rem;margin-top:6px">尝试调整筛选条件</p></div>';
+    return;
+  }
+  grid.className='exercise-grid'+(currentView==='list'?' list':'');
+  grid.innerHTML=items.map((ex,i)=>{
+    const isList=currentView==='list';
+    const imgUrl=ex.images&&ex.images[0]?`${IMG_BASE}/${ex.images[0]}`:'';
+    const pm=(ex.primaryMuscles_cn||ex.primaryMuscles||[]).map(m=>`<span>${m}</span>`).join('');
+    const cnName=displayName(ex);
+    const instPrev=displayInstructions(ex).slice(0,2).join(' ');
+    return `<div class="exercise-card${isList?' list-view':''} animate-in" style="animation-delay:${i*50}ms" onclick="openDetail('${ex.id}')">
+      <div class="card-img">${imgUrl?`<img src="${imgUrl}" alt="${cnName}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=placeholder>🏋️</span>'">`:'<span class="placeholder">🏋️</span>'}</div>
+      <div class="card-body">
+        <h3>${cnName}</h3>
+        <div class="card-tags">
+          <span class="tag tag-level-${ex.level}">${ex.level_cn||formatLabel(ex.level)}</span>
+          <span class="tag tag-category">${ex.category_cn||formatLabel(ex.category)}</span>
+          ${ex.equipment?`<span class="tag tag-equipment">${ex.equipment_cn||formatLabel(ex.equipment)}</span>`:''}
+        </div>
+        <div class="card-muscles">${pm}</div>
+        ${isList?`<div class="card-instructions">${instPrev}</div>`:''}
+      </div></div>`;
+  }).join('');
+}
+
+function renderPagination(){
+  const total=Math.ceil(filteredExercises.length/PAGE_SIZE);
+  const pag=document.getElementById('pagination');
+  if(total<=1){pag.innerHTML='';return;}
+  let h=`<button ${currentPage===1?'disabled':''} onclick="goPage(${currentPage-1})">‹ 上一页</button>`;
+  for(let i=1;i<=total;i++) h+=`<button class="${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  h+=`<button ${currentPage===total?'disabled':''} onclick="goPage(${currentPage+1})">下一页 ›</button>`;
+  pag.innerHTML=h;
+}
+
+function goPage(p){ const total=Math.ceil(filteredExercises.length/PAGE_SIZE); if(p<1||p>total)return; currentPage=p; renderAll(); document.getElementById('exercise-grid').scrollIntoView({behavior:'smooth',block:'start'}); }
+function setView(v){ currentView=v; document.getElementById('view-grid').classList.toggle('active',v==='grid'); document.getElementById('view-list').classList.toggle('active',v==='list'); renderGrid(); }
+
+// ===== MODAL =====
+function openDetail(id){
+  const ex=allExercises.find(e=>e.id===id); if(!ex)return;
+  const mc=document.getElementById('modal-content');
+  const images=(ex.images||[]).map(img=>`${IMG_BASE}/${img}`);
+  const cnName=displayName(ex);
+  const cnInst=displayInstructions(ex);
+  mc.innerHTML=`
+    ${images.length>0?`<div class="modal-images">${images.map(src=>`<img src="${src}" alt="${cnName}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`:''}
+    <h2>${cnName}</h2>
+    <div class="meta-row">
+      <span class="meta-badge tag-level-${ex.level}">${ex.level_cn||formatLabel(ex.level)}</span>
+      <span class="meta-badge tag-category">${ex.category_cn||formatLabel(ex.category)}</span>
+      ${ex.equipment?`<span class="meta-badge tag-equipment">${ex.equipment_cn||formatLabel(ex.equipment)}</span>`:''}
+      ${ex.force?`<span class="meta-badge" style="background:rgba(139,92,246,0.1);color:#A78BFA">${ex.force_cn||formatLabel(ex.force)}</span>`:''}
+      ${ex.mechanic?`<span class="meta-badge" style="background:rgba(14,165,233,0.1);color:#38BDF8">${ex.mechanic_cn||formatLabel(ex.mechanic)}</span>`:''}
+    </div>
+    ${(ex.primaryMuscles||[]).length>0?`<div class="modal-section"><h3>目标肌群</h3><div class="modal-muscles">${(ex.primaryMuscles_cn||ex.primaryMuscles||[]).map(m=>`<span class="muscle-tag">${m}</span>`).join('')}${(ex.secondaryMuscles_cn||ex.secondaryMuscles||[]).map(m=>`<span class="muscle-tag secondary">${m}</span>`).join('')}</div></div>`:''}
+    ${cnInst.length>0?`<div class="modal-section"><h3>动作步骤</h3><ol>${cnInst.map(inst=>`<li>${inst}</li>`).join('')}</ol></div>`:''}
+    <div class="modal-actions">
+      <button class="btn-add-plan" id="modal-add-btn" onclick="addToPlan('${ex.id}')">+ 加入训练计划</button>
+      <button class="btn-outline" onclick="closeModal()">关闭</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }
+
+// ===== WORKOUT PLANNER =====
+function addToPlan(id){
+  const plan=getPlan();
+  if(!plan[currentDay]) plan[currentDay]=[];
+  if(plan[currentDay].some(e=>e.id===id)){showToast('该动作已在当天计划中');return;}
+  plan[currentDay].push({id,sets:3,reps:'12'});
+  savePlan(plan);
+  const btn=document.getElementById('modal-add-btn');
+  btn.textContent='✓ 已添加'; btn.classList.add('added');
+  setTimeout(()=>{if(btn){btn.textContent='+ 加入训练计划';btn.classList.remove('added');}},1500);
+  showToast('已添加到训练计划');
+}
+
+function showPlanner(){
+  document.getElementById('browser-panel').style.display='none';
+  document.getElementById('planner-panel').classList.add('active');
+  document.getElementById('nav-browse').classList.remove('active');
+  document.getElementById('nav-planner').classList.add('active');
+  renderPlanner();
+}
+
+function showBrowser(){
+  document.getElementById('browser-panel').style.display='block';
+  document.getElementById('planner-panel').classList.remove('active');
+  document.getElementById('nav-browse').classList.add('active');
+  document.getElementById('nav-planner').classList.remove('active');
+}
+
+function renderPlanner(){
+  document.getElementById('planner-tabs').innerHTML=DAYS.map(d=>
+    `<button class="planner-day-tab${d===currentDay?' active':''}" onclick="switchDay('${d}')">${DAY_LABELS[d]}</button>`
+  ).join('');
+  const plan=getPlan();
+  const exercises=plan[currentDay]||[];
+  const routineDiv=document.getElementById('planner-routine');
+  if(!exercises.length){
+    routineDiv.innerHTML=`<div class="planner-empty"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg><h3>${DAY_LABELS[currentDay]} 暂无训练安排</h3><p>前往动作库选择动作加入计划</p></div>`;
+    return;
+  }
+  routineDiv.innerHTML=exercises.map((item,i)=>{
+    const ex=allExercises.find(e=>e.id===item.id); if(!ex)return'';
+    return`<div class="planner-exercise animate-in" style="animation-delay:${i*40}ms">
+      <div class="ex-num">${i+1}</div>
+      <div class="ex-info"><h4>${displayName(ex)}</h4><div class="ex-meta">${ex.level_cn||formatLabel(ex.level)} · ${ex.category_cn||formatLabel(ex.category)} · ${(ex.primaryMuscles_cn||ex.primaryMuscles||[]).join('、')}</div></div>
+      <div class="ex-sets"><label>组</label><input type="number" min="1" max="10" value="${item.sets}" onchange="updateSets(${i},'sets',this.value)"><label>次</label><input type="text" value="${item.reps}" onchange="updateSets(${i},'reps',this.value)"></div>
+      <button class="ex-remove" onclick="removeFromPlan(${i})" title="移除">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function switchDay(day){currentDay=day;renderPlanner();}
+function updateSets(i,f,v){const p=getPlan();p[currentDay][i][f]=f==='sets'?parseInt(v)||1:v;savePlan(p);}
+function removeFromPlan(i){const p=getPlan();p[currentDay].splice(i,1);savePlan(p);renderPlanner();}
+function clearDay(){const p=getPlan();p[currentDay]=[];savePlan(p);renderPlanner();}
+function clearAllPlan(){if(!confirm('确定清空所有训练计划？'))return;localStorage.removeItem('fitforge_plan');renderPlanner();updatePlanBadge();}
+
+function exportPlan(){
+  const plan=getPlan(); let text='🏋️ FitForge 训练计划\n'+'='.repeat(40)+'\n\n';
+  DAYS.forEach(d=>{
+    const exercises=plan[d]||[]; if(!exercises.length)return;
+    text+=`📅 ${DAY_LABELS[d]}\n${'-'.repeat(20)}\n`;
+    exercises.forEach((item,i)=>{
+      const ex=allExercises.find(e=>e.id===item.id);
+      if(ex){text+=`  ${i+1}. ${displayName(ex)} — ${item.sets}组 × ${item.reps}次\n`;if(ex.primaryMuscles)text+=`     目标: ${ex.primaryMuscles.map(formatLabel).join('、')}\n`;}
+    });
+    text+='\n';
+  });
+  const blob=new Blob([text],{type:'text/plain'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='FitForge_训练计划.txt'; a.click(); URL.revokeObjectURL(url);
+  showToast('训练计划已导出');
+}
+
+function updatePlanBadge(){
+  const plan=getPlan(); let count=0;
+  Object.values(plan).forEach(arr=>{if(Array.isArray(arr))count+=arr.length;});
+  document.getElementById('plan-count').textContent=count;
+}
+
+// ===== SHARE =====
+function openShareModal(){
+  const plan=getPlan();
+  const qrWrap = document.getElementById('qr-code');
+  qrWrap.innerHTML = '';
+
+  // Build a text summary for QR code
+  let qrText = 'FitForge 训练计划\n\n';
+  DAYS.forEach(d=>{
+    const exercises=plan[d]||[];
+    if(!exercises.length) return;
+    qrText += DAY_LABELS[d] + ':\n';
+    exercises.forEach((item,i)=>{
+      const ex=allExercises.find(e=>e.id===item.id);
+      if(ex){
+        qrText += `  ${i+1}. ${displayName(ex)} - ${item.sets}组x${item.reps}次
+`;
+        if(ex.primaryMuscles_cn) qrText += `     目标: ${ex.primaryMuscles_cn.join('、')}
+`;
+      }
+    });
+    qrText += '\n';
+  });
+
+  // Generate QR code with the text plan
+  new QRCode(qrWrap, {
+    text: qrText,
+    width: 200,
+    height: 200,
+    colorDark: '#0F172A',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.L
+  });
+
+  // Show preview
+  const preview = document.getElementById('share-plan-preview');
+  preview.style.display = 'block';
+  preview.textContent = qrText;
+
+  document.getElementById('share-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeShareModal(){
+  document.getElementById('share-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function downloadShareFile(){
+  var plan=getPlan();
+  var exerciseMap = {};
+  DAYS.forEach(function(d){
+    (plan[d]||[]).forEach(function(item){
+      var ex=allExercises.find(function(e){return e.id===item.id});
+      if(ex){
+        exerciseMap[ex.id] = {
+          id: ex.id,
+          name: displayName(ex),
+          level_cn: ex.level_cn || formatLabel(ex.level),
+          category_cn: ex.category_cn || formatLabel(ex.category),
+          primaryMuscles_cn: ex.primaryMuscles_cn || (ex.primaryMuscles||[]).map(formatLabel),
+          instructions_cn: displayInstructions(ex)
+        };
+      }
+    });
+  });
+  var shareHtml = buildStandalonePage(plan, exerciseMap);
+  var blob = new Blob([shareHtml], {type: 'text/html;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'FitForge_训练计划分享.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('分享文件已下载，可通过微信发送给好友');
+}
+
+function buildStandalonePage(plan, exerciseMap){
+  return '<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no\">\n<title>FitForge 训练计划分享</title>\n<style>' +
+    '*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;background:#0F172A;color:#E2E8F0;padding:20px;min-height:100vh}' +
+    'h1{font-family:\"Barlow Condensed\",sans-serif;font-size:1.5rem;color:#F97316;text-align:center;margin-bottom:20px}' +
+    '.day-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:14px}' +
+    '.day-title{font-size:1rem;font-weight:700;color:#F8FAFC;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #334155}' +
+    '.ex-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(51,65,85,0.5)}' +
+    '.ex-item:last-child{border-bottom:none}' +
+    '.ex-num{width:26px;height:26px;background:#F97316;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:#fff;flex-shrink:0}' +
+    '.ex-info{flex:1;min-width:0}' +
+    '.ex-name{font-size:0.875rem;font-weight:600;color:#F8FAFC;margin-bottom:3px;cursor:pointer}' +
+    '.ex-meta{font-size:0.6875rem;color:#94A3B8}' +
+    '.ex-dose{font-size:0.75rem;color:#FB923C;font-weight:600;white-space:nowrap}' +
+    '.ex-steps{margin-top:6px;font-size:0.6875rem;color:#94A3B8;line-height:1.6;display:none}' +
+    '.ex-steps li{margin-bottom:3px}' +
+    '.ex-steps li::marker{color:#F97316}' +
+    '.empty{text-align:center;padding:40px 16px;color:#94A3B8}' +
+    '.footer{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #334155;color:#64748B;font-size:0.6875rem}' +
+    '<\/style>\n<\/head>\n<body>\n<h1>FitForge 训练计划</h1>\n' +
+    buildPlanHTML(plan, exerciseMap) +
+    '<div class=\"footer\">由 FitForge 生成 \u00b7 点击动作名称展开教学步骤<\/div>\n' +
+    '<script>document.querySelectorAll(\".ex-name\").forEach(function(el){el.addEventListener(\"click\",function(){var s=el.parentElement.querySelector(\".ex-steps\");if(s)s.style.display=s.style.display===\"none\"?\"block\":\"none\"})});<\/script>\n<\/body>\n<\/html>';
+}
+
+function buildPlanHTML(plan, exerciseMap){
+  var html = '';
+  var hasAny = false;
+  DAYS.forEach(function(d){
+    var exercises=plan[d]||[];
+    if(!exercises.length) return;
+    hasAny = true;
+    html += '<div class=\"day-card\"><div class=\"day-title\">' + DAY_LABELS[d] + '<\/div>';
+    exercises.forEach(function(item,i){
+      var ex = exerciseMap[item.id];
+      if(!ex) return;
+      html += '<div class=\"ex-item\"><div class=\"ex-num\">' + (i+1) + '<\/div>';
+      html += '<div class=\"ex-info\"><div class=\"ex-name\">' + ex.name + '<\/div>';
+      html += '<div class=\"ex-meta\">' + ex.level_cn + ' \u00b7 ' + ex.category_cn + ' \u00b7 ' + (ex.primaryMuscles_cn||[]).join('\u3001') + '<\/div>';
+      if(ex.instructions_cn && ex.instructions_cn.length > 0){
+        html += '<ol class=\"ex-steps\">' + ex.instructions_cn.map(function(s){return '<li>'+s+'<\/li>'}).join('') + '<\/ol>';
+      }
+      html += '<\/div>';
+      html += '<div class=\"ex-dose\">' + item.sets + '\u7ec4 x ' + item.reps + '\u6b21<\/div>';
+      html += '<\/div>';
+    });
+    html += '<\/div>';
+  });
+  if(!hasAny) html += '<div class=\"empty\">\u6682\u65e0\u8bad\u7ec3\u5b89\u6392<\/div>';
+  return html;
+}
+
+// Load shared plan from URL hash
+function loadSharedPlan(){
+  const hash = window.location.hash;
+  if (hash.startsWith('#share=')) {
+    try {
+      const encoded = hash.substring(7);
+      const json = decodeURIComponent(escape(atob(encoded)));
+      const shareData = JSON.parse(json);
+      if (shareData.plan) {
+        localStorage.setItem('fitforge_plan', JSON.stringify(shareData.plan));
+        updatePlanBadge();
+        showToast('已加载分享的训练计划');
+        showPlanner();
+        // Clean URL
+        history.replaceState(null, '', window.location.pathname);
+      }
+    } catch(e) { /* ignore invalid share data */ }
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg){
+  const toast=document.getElementById('toast');
+  toast.textContent=msg; toast.classList.add('show');
+  clearTimeout(toast._timeout); toast._timeout=setTimeout(()=>toast.classList.remove('show'),2000);
+}
+
+// ===== INIT =====
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeShareModal();}});
+loadData(); updatePlanBadge(); loadSharedPlan();
+</script>
+</body>
+</html>

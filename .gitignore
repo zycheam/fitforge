@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.codex/
+.impeccable/
+.agents/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Debug/temp files
+debug_html.py
+check_fix.py
+check_line.py
+check_line2.py
+check_translations.py
+fix_index.py
+fix_strings.py
+fix_translations.py
+validate_js.py
+validate_html.js
+test_data.js
+test_share.js
+test_share_output.html
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
