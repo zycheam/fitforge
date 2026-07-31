@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FitForge — 动作库 & 健身教练</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 :root {
@@ -22,8 +21,8 @@
   --color-text: #E2E8F0;
   --color-text-muted: #94A3B8;
   --color-destructive: #EF4444;
-  --font-heading: 'Barlow Condensed', sans-serif;
-  --font-body: 'Barlow', sans-serif;
+  --font-heading: 'Barlow Condensed', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Barlow', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --radius: 16px;
   --radius-sm: 8px;
   --transition: 200ms ease;
@@ -47,7 +46,7 @@ body {
 .nav-links button { color: var(--color-text-muted); font-size: 0.875rem; font-weight: 500; transition: color var(--transition); background: none; border: none; cursor: pointer; font-family: var(--font-body); white-space: nowrap; }
 .nav-links button:hover { color: var(--color-foreground); }
 .nav-links button.active { color: var(--color-primary); }
-.nav-cta { background: var(--color-accent); color: #fff; border: none; padding: 8px 18px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.8125rem; cursor: pointer; transition: transform var(--transition); font-family: var(--font-body); white-space: nowrap; }
+.nav-cta { background: var(--color-accent); color: var(--color-bg); border: none; padding: 8px 18px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.8125rem; cursor: pointer; transition: transform var(--transition); font-family: var(--font-body); white-space: nowrap; }
 .nav-cta:hover { transform: translateY(-2px); }
 .nav-cta .badge { background: rgba(255,255,255,0.25); border-radius: 999px; padding: 1px 7px; margin-left: 5px; font-size: 0.6875rem; }
 
@@ -71,22 +70,22 @@ body {
 .filter-title { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 .filter-chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .filter-chip {
-  padding: 4px 10px; border-radius: 999px; font-size: 0.6875rem; font-weight: 500;
+  padding: 10px 14px; min-height: 44px; border-radius: 999px; font-size: 0.6875rem; font-weight: 500;
   border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
   cursor: pointer; transition: all var(--transition); font-family: var(--font-body); white-space: nowrap;
 }
 .filter-chip:hover { border-color: var(--color-primary); color: var(--color-foreground); }
-.filter-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.filter-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
 
 /* Muscle Grid */
 .muscle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .muscle-chip {
-  padding: 6px 8px; border-radius: var(--radius-sm); font-size: 0.6875rem; font-weight: 500;
+  padding: 10px 14px; min-height: 44px; border-radius: var(--radius-sm); font-size: 0.6875rem; font-weight: 500;
   border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
   cursor: pointer; transition: all var(--transition); font-family: var(--font-body); text-align: center;
 }
 .muscle-chip:hover { border-color: var(--color-primary); color: var(--color-foreground); }
-.muscle-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.muscle-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
 
 /* Results Header */
 .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
@@ -100,7 +99,7 @@ body {
 
 .view-toggle { display: flex; gap: 3px; background: var(--color-bg-card); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--color-border); }
 .view-toggle button { padding: 5px 10px; border: none; background: transparent; color: var(--color-text-muted); border-radius: 5px; cursor: pointer; font-size: 0.75rem; font-family: var(--font-body); transition: all var(--transition); }
-.view-toggle button.active { background: var(--color-primary); color: #fff; }
+.view-toggle button.active { background: var(--color-primary); color: var(--color-bg); }
 
 .sort-select { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 7px 10px; color: var(--color-foreground); font-size: 0.75rem; font-family: var(--font-body); outline: none; cursor: pointer; }
 
@@ -164,7 +163,7 @@ body {
 .modal-muscles .muscle-tag { padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; background: rgba(249,115,22,0.1); color: var(--color-secondary); border: 1px solid rgba(249,115,22,0.2); }
 .modal-muscles .muscle-tag.secondary { background: rgba(100,116,139,0.1); color: var(--color-text-muted); border-color: rgba(100,116,139,0.2); }
 .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); }
-.btn-add-plan { background: var(--color-primary); color: #fff; border: none; padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-add-plan { background: var(--color-primary); color: var(--color-bg); border: none; padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
 .btn-add-plan:hover { background: var(--color-secondary); transform: translateY(-1px); }
 .btn-add-plan.added { background: var(--color-accent); }
 
@@ -187,7 +186,7 @@ body {
 .share-modal .qr-wrap canvas, .share-modal .qr-wrap img { border-radius: var(--radius-sm); background: #fff; padding: 12px; }
 .share-modal .share-hint { color: var(--color-text-muted); font-size: 0.75rem; margin-top: 12px; }
 .share-modal .share-url { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 10px; color: var(--color-text); font-size: 0.75rem; word-break: break-all; margin: 12px 0; text-align: left; max-height: 80px; overflow-y: auto; }
-.btn-copy { background: var(--color-primary); color: #fff; border: none; padding: 8px 20px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.btn-copy { background: var(--color-primary); color: var(--color-bg); border: none; padding: 8px 20px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
 .btn-copy:hover { background: var(--color-secondary); }
 .btn-copy.copied { background: var(--color-accent); }
 
@@ -197,7 +196,7 @@ body {
 .planner-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
 .planner-day-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
 .planner-day-tab { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
-.planner-day-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.planner-day-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
 .planner-routine { display: flex; flex-direction: column; gap: 10px; }
 .planner-exercise {
   display: flex; align-items: center; gap: 14px; background: var(--color-bg-card);
@@ -205,7 +204,7 @@ body {
   transition: border-color var(--transition); flex-wrap: wrap;
 }
 .planner-exercise:hover { border-color: var(--color-primary); }
-.planner-exercise .ex-num { width: 30px; height: 30px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem; color: #fff; flex-shrink: 0; }
+.planner-exercise .ex-num { width: 30px; height: 30px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem; color: var(--color-bg); flex-shrink: 0; }
 .planner-exercise .ex-info { flex: 1; min-width: 120px; }
 .planner-exercise .ex-info h4 { font-size: 0.875rem; color: var(--color-foreground); margin-bottom: 2px; }
 .planner-exercise .ex-info .ex-meta { font-size: 0.6875rem; color: var(--color-text-muted); }
@@ -228,13 +227,13 @@ body {
 .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 28px; flex-wrap: wrap; }
 .pagination button { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
 .pagination button:hover { border-color: var(--color-primary); color: var(--color-foreground); }
-.pagination button.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
-.pagination button:disabled { opacity: 0.25; cursor: not-allowed; }
+.pagination button.active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-bg); }
+.pagination button:disabled { opacity: 0.35; cursor: not-allowed; color: var(--color-text-muted); }
 
 /* Toast */
 .toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); z-index: 400;
-  background: var(--color-accent); color: #fff; padding: 10px 22px; border-radius: var(--radius-sm);
+  background: var(--color-accent); color: var(--color-bg); padding: 10px 22px; border-radius: var(--radius-sm);
   font-weight: 600; font-size: 0.8125rem; opacity: 0; transition: all 300ms ease;
   box-shadow: 0 6px 24px rgba(34,197,94,0.3); white-space: nowrap;
 }
@@ -249,6 +248,19 @@ body {
 .loading { display: flex; align-items: center; justify-content: center; padding: 80px 0; flex-direction: column; gap: 14px; }
 .loading .spinner { width: 36px; height: 36px; border: 3px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
 .loading p { color: var(--color-text-muted); font-size: 0.8125rem; }
+
+/* P1-4: 尊重用户的减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .exercise-card, .filter-chip, .muscle-chip, .btn-add-plan, .btn-copy,
+  .nav-cta, .planner-day-tab, .pagination button, .view-toggle button {
+    transform: none !important;
+  }
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Responsive */
@@ -276,13 +288,26 @@ body {
 }
 
 /* Animations */
+
+/* P1-4: 尊重用户的减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .exercise-card, .filter-chip, .muscle-chip, .btn-add-plan, .btn-copy,
+  .nav-cta, .planner-day-tab, .pagination button, .view-toggle button {
+    transform: none !important;
+  }
+}
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-in { animation: fadeInUp 0.35s ease forwards; }
 </style>
-<script src="exercises_data.js"></script></head>
+<script src="exercises_data.js" defer></script></head>
 <body>
 
 <nav class="nav">
@@ -304,7 +329,7 @@ body {
   <aside class="sidebar">
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input type="text" id="search" placeholder="搜索动作..." oninput="filterAndRender()">
+      <input type="text" id="search" placeholder="搜索动作..." aria-label="搜索健身动作" oninput="filterAndRender()">
     </div>
     <div class="filter-section"><div class="filter-title">分类</div><div class="filter-chips" id="category-filters"></div></div>
     <div class="filter-section"><div class="filter-title">难度</div><div class="filter-chips" id="level-filters"></div></div>
@@ -336,7 +361,7 @@ body {
         <div class="results-count">📋 训练计划</div>
         <div style="display:flex;gap:8px">
           <button class="btn-share" onclick="openShareModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;height:14px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true" style="width:14px;height:14px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             分享计划
           </button>
           <button class="btn-outline" onclick="exportPlan()" style="padding:7px 14px;font-size:0.75rem">导出文本</button>
@@ -353,25 +378,29 @@ body {
 </div>
 
 <!-- Exercise Detail Modal -->
-<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal" id="modal">
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="动作详情" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal" role="document">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-content" id="modal-content"></div>
   </div>
 </div>
 
 <!-- Share Modal -->
-<div class="share-modal-overlay" id="share-overlay" onclick="if(event.target===this)closeShareModal()">
+<div class="share-modal-overlay" id="share-overlay" role="dialog" aria-modal="true" aria-label="分享训练计划" onclick="if(event.target===this)closeShareModal()">
   <div class="share-modal">
     <h3>分享训练计划</h3>
-    <p>下载独立网页文件发送给好友，对方可直接打开查看</p>
+    <p>微信扫码或复制链接发给好友，对方在浏览器打开即可查看</p>
     <div class="qr-wrap" id="qr-code"></div>
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <input type="text" id="share-url-box" readonly aria-label="分享链接" style="display:none;flex:1;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:8px 10px;color:var(--color-text);font-size:0.6875rem;font-family:var(--font-body);text-overflow:ellipsis" onclick="this.select()">
+      <button class="btn-copy" id="btn-copy-url" onclick="copyShareUrl()" style="white-space:nowrap">复制链接</button>
+    </div>
     <div id="share-plan-preview" style="text-align:left;max-height:150px;overflow-y:auto;margin:8px 0;font-size:0.75rem;color:var(--color-text-muted);background:var(--color-bg);border-radius:var(--radius-sm);padding:10px;display:none"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <button class="btn-copy" id="btn-download-share" onclick="downloadShareFile()">下载分享文件</button>
+      <button class="btn-copy" id="btn-download-share" onclick="downloadShareFile()" style="opacity:0.7">下载独立文件</button>
       <button class="btn-outline" onclick="closeShareModal()" style="padding:8px 20px;font-size:0.8125rem">关闭</button>
     </div>
-    <div class="share-hint">将下载的 HTML 文件通过微信发送给好友，对方用手机浏览器打开即可查看完整训练计划</div>
+    <div class="share-hint">扫码后浏览器自动打开训练计划 / 也可复制链接直接发送</div>
   </div>
 </div>
 
@@ -405,7 +434,7 @@ function loadData() {
     renderAll();
     document.getElementById('loading').style.display = 'none';
   } catch(e) {
-    document.getElementById('loading').innerHTML = '<p style="color:#EF4444">数据加载失败</p><p style="color:var(--color-text-muted);font-size:0.8125rem;margin-top:6px">请确保 exercises_data.js 与 index.html 在同一目录</p>';
+    document.getElementById('loading').innerHTML = '<p style="color:var(--color-error)">数据加载失败</p><p style="color:var(--color-text-muted);font-size:0.8125rem;margin-top:6px">请确保 exercises_data.js 与 index.html 在同一目录</p>';
   }
 }
 
@@ -518,7 +547,7 @@ function renderGrid(){
     const cnName=displayName(ex);
     const instPrev=displayInstructions(ex).slice(0,2).join(' ');
     return `<div class="exercise-card${isList?' list-view':''} animate-in" style="animation-delay:${i*50}ms" onclick="openDetail('${ex.id}')">
-      <div class="card-img">${imgUrl?`<img src="${imgUrl}" alt="${cnName}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=placeholder>🏋️</span>'">`:'<span class="placeholder">🏋️</span>'}</div>
+      <div class="card-img">${imgUrl?`<img src="${imgUrl}" alt="${cnName}" width="480" height="360" loading="lazy" onerror="this.parentElement.innerHTML='<span class=placeholder>🏋️</span>'">`:'<span class="placeholder">🏋️</span>'}</div>
       <div class="card-body">
         <h3>${cnName}</h3>
         <div class="card-tags">
@@ -553,7 +582,7 @@ function openDetail(id){
   const cnName=displayName(ex);
   const cnInst=displayInstructions(ex);
   mc.innerHTML=`
-    ${images.length>0?`<div class="modal-images">${images.map(src=>`<img src="${src}" alt="${cnName}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`:''}
+    ${images.length>0?`<div class="modal-images">${images.map(src=>`<img src="${src}" alt="${cnName}" width="480" height="360" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`:''}
     <h2>${cnName}</h2>
     <div class="meta-row">
       <span class="meta-badge tag-level-${ex.level}">${ex.level_cn||formatLabel(ex.level)}</span>
@@ -570,9 +599,32 @@ function openDetail(id){
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow='hidden';
+  // 记住当前焦点，关闭时恢复
+  var overlay=document.getElementById('modal-overlay');
+  overlay._prevFocus=document.activeElement;
+  // 聚焦到关闭按钮
+  var closeBtn=overlay.querySelector('.modal-close');
+  if(closeBtn) setTimeout(function(){closeBtn.focus();},50);
 }
 
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }
+// P1-1: ESC 关闭模态框
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    var mo=document.getElementById('modal-overlay');
+    if(mo&&mo.classList.contains('open')) closeModal();
+    var so=document.getElementById('share-overlay');
+    if(so&&so.classList.contains('open')) closeShareModal();
+  }
+});
+
+function closeModal(){
+  var overlay=document.getElementById('modal-overlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow='';
+  // 焦点恢复
+  var prev=overlay._prevFocus;
+  if(prev&&prev.focus) prev.focus();
+}
 
 // ===== WORKOUT PLANNER =====
 function addToPlan(id){
@@ -610,7 +662,7 @@ function renderPlanner(){
   const exercises=plan[currentDay]||[];
   const routineDiv=document.getElementById('planner-routine');
   if(!exercises.length){
-    routineDiv.innerHTML=`<div class="planner-empty"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg><h3>${DAY_LABELS[currentDay]} 暂无训练安排</h3><p>前往动作库选择动作加入计划</p></div>`;
+    routineDiv.innerHTML=`<div class="planner-empty"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg><h3>${DAY_LABELS[currentDay]} 暂无训练安排</h3><p>前往动作库选择动作加入计划</p></div>`;
     return;
   }
   routineDiv.innerHTML=exercises.map((item,i)=>{
@@ -653,48 +705,50 @@ function updatePlanBadge(){
 }
 
 // ===== SHARE =====
+function encodeShareData(plan){
+  var data={plan:plan,v:1};
+  var json=JSON.stringify(data);
+  return btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g,function(_,p){
+    return String.fromCharCode(parseInt(p,16));
+  }));
 function openShareModal(){
-  const plan=getPlan();
-  const qrWrap = document.getElementById('qr-code');
-  qrWrap.innerHTML = '';
-
-  // Build a text summary for QR code
-  let qrText = 'FitForge 训练计划\n\n';
-  DAYS.forEach(d=>{
-    const exercises=plan[d]||[];
-    if(!exercises.length) return;
-    qrText += DAY_LABELS[d] + ':\n';
-    exercises.forEach((item,i)=>{
-      const ex=allExercises.find(e=>e.id===item.id);
-      if(ex){
-        qrText += `  ${i+1}. ${displayName(ex)} - ${item.sets}组x${item.reps}次
-`;
-        if(ex.primaryMuscles_cn) qrText += `     目标: ${ex.primaryMuscles_cn.join('、')}
-`;
-      }
-    });
-    qrText += '\n';
+  var overlay=document.getElementById('share-overlay');
+  overlay._prevFocus=document.activeElement;
+  var plan=getPlan();
+  var qrWrap=document.getElementById('qr-code');
+  qrWrap.innerHTML='';
+  var encoded=encodeShareData(plan);
+  var shareUrl=SHARE_BASE_URL+'#share='+encoded;
+  try{new QRCode(qrWrap,{text:shareUrl,width:220,height:220,colorDark:'#0F172A',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}
+  catch(e){qrWrap.innerHTML='<p style="color:var(--color-error);font-size:0.75rem">QR 生成失败，请复制链接分享</p>';}
+  var urlBox=document.getElementById('share-url-box');
+  urlBox.value=shareUrl; urlBox.style.display='block';
+  var preview=document.getElementById('share-plan-preview');
+  var hasEx=false; var pt='FitForge 训练计划\n\n';
+  DAYS.forEach(function(d){
+    var exs=plan[d]||[]; if(!exs.length) return; hasEx=true; pt+=DAY_LABELS[d]+':\n';
+    exs.forEach(function(item,i){
+      var ex=allExercises.find(function(e){return e.id===item.id});
+      if(ex) pt+='  '+(i+1)+'. '+displayName(ex)+' - '+item.sets+'组x'+item.reps+'次\n';
+    }); pt+='\n';
   });
-
-  // Generate QR code with the text plan
-  new QRCode(qrWrap, {
-    text: qrText,
-    width: 200,
-    height: 200,
-    colorDark: '#0F172A',
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.L
-  });
-
-  // Show preview
-  const preview = document.getElementById('share-plan-preview');
-  preview.style.display = 'block';
-  preview.textContent = qrText;
-
+  if(!hasEx) pt='暂无训练安排，请先在训练计划中添加动作';
+  preview.style.display='block'; preview.textContent=pt;
   document.getElementById('share-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  // 聚焦到分享框
+  setTimeout(function(){
+    var box=document.getElementById('share-url-box');
+    if(box) box.focus();
+  },50);
+  document.body.style.overflow='hidden';
 }
-
+function copyShareUrl(){
+  var urlBox=document.getElementById('share-url-box');
+  urlBox.select(); navigator.clipboard.writeText(urlBox.value).catch(function(){document.execCommand('copy');});
+  var btn=document.getElementById('btn-copy-url');
+  btn.textContent='已复制!'; btn.classList.add('copied');
+  setTimeout(function(){btn.textContent='复制链接'; btn.classList.remove('copied');},2000);
+}
 function closeShareModal(){
   document.getElementById('share-overlay').classList.remove('open');
   document.body.style.overflow = '';
@@ -730,7 +784,7 @@ function downloadShareFile(){
 }
 
 function buildStandalonePage(plan, exerciseMap){
-  return '<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no\">\n<title>FitForge 训练计划分享</title>\n<style>' +
+  return '<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>FitForge 训练计划分享</title>\n<style>' +
     '*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;background:#0F172A;color:#E2E8F0;padding:20px;min-height:100vh}' +
     'h1{font-family:\"Barlow Condensed\",sans-serif;font-size:1.5rem;color:#F97316;text-align:center;margin-bottom:20px}' +
     '.day-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:14px}' +
@@ -786,7 +840,9 @@ function loadSharedPlan(){
   if (hash.startsWith('#share=')) {
     try {
       const encoded = hash.substring(7);
-      const json = decodeURIComponent(escape(atob(encoded)));
+      const json = decodeURIComponent(atob(encoded).split('').map(function(c){
+        return '%'+c.charCodeAt(0).toString(16).padStart(2,'0');
+      }).join(''));
       const shareData = JSON.parse(json);
       if (shareData.plan) {
         localStorage.setItem('fitforge_plan', JSON.stringify(shareData.plan));
