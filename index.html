@@ -6,7 +6,7 @@
 <title>FitForge — 动作库 & 健身教练</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" async></script>
 <style>
 :root {
   --color-primary: #F97316;
@@ -718,7 +718,7 @@ function renderPlanner(){
       <div class="ex-num">${i+1}</div>
       <div class="ex-info"><h4>${displayName(ex)}</h4><div class="ex-meta">${ex.level_cn||formatLabel(ex.level)} · ${ex.category_cn||formatLabel(ex.category)} · ${(ex.primaryMuscles_cn||ex.primaryMuscles||[]).join('、')}</div></div>
       <div class="ex-sets"><label>组</label><input type="number" min="1" max="10" value="${item.sets}" onchange="updateSets(${i},'sets',this.value)"><label>次</label><input type="text" value="${item.reps}" onchange="updateSets(${i},'reps',this.value)"></div>
-      <button class="ex-video" onclick="openVideoSearch(${ex.id})" title="视频教程">📺 视频</button>
+      <button class="ex-video" onclick="openVideoSearch('${ex.id}')" title="视频教程">📺 视频</button>
       <button class="ex-remove" onclick="removeFromPlan(${i})" title="移除">✕</button>
     </div>`;
   }).join('');
