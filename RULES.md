@@ -226,3 +226,32 @@ node .agents/skills/impeccable/scripts/detect.mjs --json
 
 ### 部署
 git push origin master → GitHub Pages 自动部署 → https://zycheam.github.io/fitforge/
+---
+
+## 8. Impeccable Polish 记录 (2026-07-31)
+
+### 修复清单
+
+**index.html（主应用 — Operate 模式）**
+- 	ransition: all → 替换为 6 个具体属性（background, color, transform, border-color, opacity）
+- Toast box-shadow 绿色 glow → 中性 gba(0,0,0,0.5)
+- Exercise card hover 橙色 glow → 中性 gba(0,0,0,0.3)
+- 重复的 ESC 键盘处理器 → 移除底部冗余监听，保留一个
+- 重复的 prefers-reduced-motion 块 → 合并为一个
+- outline: none → 补充 :focus-visible 聚焦环（2px solid primary, offset 2px）
+
+**fitforge-landing.html（落地页 — Persuade 模式）**
+- 移除被禁 section-tag kickers（"核心功能"/"使用流程"/"定价方案"）
+- 移除 section-tag CSS 定义
+- 整合散落的 reveal 动画：只保留 hero + 前 4 张 feature card
+- 移除装饰性 gradient orbs，替换为 subtle 椭圆渐变
+- 添加 focus-visible 键盘导航环
+
+### Craft Floor 合规检查
+- 无 gradient text ✓
+- 无 glass/blur 装饰 ✓
+- 无硬偏移阴影 ✓
+- 无 unicode/emoji 代替图标 ✓
+- 深度阴影均为 offset+blur 中性色 ✓
+- 无卡片嵌套 ✓
+- 字体回退栈含中文 fallback ✓

@@ -214,6 +214,9 @@ body {
 .planner-exercise .ex-sets label { font-size: 0.625rem; color: var(--color-text-muted); }
 .planner-exercise .ex-remove { background: none; border: none; color: var(--color-text-muted); cursor: pointer; font-size: 1.125rem; padding: 3px 6px; transition: color var(--transition); }
 .planner-exercise .ex-remove:hover { color: var(--color-destructive); }
+/* 视频教程按钮 */
+.planner-exercise .ex-video { background: none; border: 1px solid rgba(59,130,246,0.3); color: #60A5FA; cursor: pointer; font-size: 0.6875rem; padding: 5px 10px; border-radius: var(--radius-sm); transition: all var(--transition); white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+.planner-exercise .ex-video:hover { background: rgba(59,130,246,0.1); border-color: #3B82F6; }
 .planner-empty { text-align: center; padding: 50px 16px; color: var(--color-text-muted); }
 .planner-empty svg { width: 56px; height: 56px; stroke: var(--color-muted); margin-bottom: 12px; }
 .planner-empty h3 { font-family: var(--font-heading); font-size: 1.125rem; color: var(--color-foreground); margin-bottom: 6px; }
@@ -222,6 +225,31 @@ body {
 .btn-outline:hover { border-color: var(--color-primary); color: var(--color-primary); }
 .btn-danger { background: transparent; color: var(--color-destructive); border: 2px solid rgba(239,68,68,0.3); padding: 9px 20px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition); font-family: var(--font-body); }
 .btn-danger:hover { background: var(--color-destructive); color: #fff; }
+
+/* 视频搜索模态框 */
+.video-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 16px; }
+.video-modal-overlay.open { display: flex; }
+.video-modal { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 100%; max-width: 620px; max-height: 85vh; overflow-y: auto; padding: 24px; position: relative; }
+.video-modal h3 { font-family: var(--font-heading); font-size: 1.125rem; color: var(--color-foreground); margin-bottom: 4px; }
+.video-modal .video-subtitle { font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 16px; }
+.video-modal .video-search-links { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.video-modal .video-search-links a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 600; text-decoration: none; transition: all var(--transition); }
+.video-modal .link-bilibili { background: #FB7299; color: #fff; }
+.video-modal .link-bilibili:hover { background: #fc5c8a; }
+.video-modal .link-douyin { background: #111; color: #fff; border: 1px solid #333; }
+.video-modal .link-douyin:hover { background: #222; }
+.video-modal .video-results { display: flex; flex-direction: column; gap: 10px; }
+.video-modal .video-item { display: flex; gap: 12px; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 10px; cursor: pointer; transition: border-color var(--transition); align-items: center; text-decoration: none; color: inherit; }
+.video-modal .video-item:hover { border-color: #3B82F6; }
+.video-modal .video-item .thumb { width: 120px; height: 68px; border-radius: 4px; object-fit: cover; flex-shrink: 0; background: #1E293B; }
+.video-modal .video-item .v-info { flex: 1; min-width: 0; }
+.video-modal .video-item .v-title { font-size: 0.8125rem; color: var(--color-foreground); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.video-modal .video-item .v-meta { font-size: 0.6875rem; color: var(--color-text-muted); }
+.video-modal .video-loading { text-align: center; color: var(--color-text-muted); padding: 20px; font-size: 0.8125rem; }
+.video-modal .video-error { text-align: center; color: var(--color-error); padding: 16px; font-size: 0.8125rem; }
+.video-modal .modal-close { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--color-text-muted); font-size: 1.25rem; cursor: pointer; padding: 4px 8px; }
+.video-modal .modal-close:hover { color: var(--color-foreground); }
+@media (max-width: 480px) { .video-modal .video-item .thumb { width: 90px; height: 51px; } .video-modal .video-item .v-title { font-size: 0.75rem; } }
 
 /* Pagination */
 .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 28px; flex-wrap: wrap; }
@@ -305,7 +333,7 @@ button:focus-visible, a:focus-visible, .filter-chip:focus-visible, .muscle-chip:
 }
 
 </style>
-<script src="exercises_data.js" defer></script></head>
+</head>
 <body>
 
 <nav class="nav">
@@ -402,11 +430,30 @@ button:focus-visible, a:focus-visible, .filter-chip:focus-visible, .muscle-chip:
   </div>
 </div>
 
+<!-- 视频搜索模态框 -->
+<div class="video-modal-overlay" id="video-overlay" role="dialog" aria-modal="true" aria-label="视频教程" onclick="if(event.target===this)closeVideoModal()">
+  <div class="video-modal">
+    <button class="modal-close" onclick="closeVideoModal()" aria-label="关闭">✕</button>
+    <h3 id="video-title">📺 视频教程</h3>
+    <p class="video-subtitle" id="video-subtitle"></p>
+    <div class="video-search-links">
+      <a href="#" class="link-bilibili" id="link-bilibili" target="_blank" rel="noopener">📺 在B站搜索</a>
+      <a href="#" class="link-douyin" id="link-douyin" target="_blank" rel="noopener">🎵 在抖音搜索</a>
+    </div>
+    <div class="video-results" id="video-results">
+      <div class="video-loading">正在搜索视频教程...</div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<script src="exercises_data.js"></script>
 <script>
 const IMG_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/master/exercises';
+const SHARE_BASE_URL = window.location.origin + window.location.pathname;
 let allExercises = [], filteredExercises = [];
 let currentPage = 1, PAGE_SIZE = 12, currentView = 'grid';
 let activeFilters = { category: null, level: null, equipment: null, muscle: null };
@@ -612,6 +659,8 @@ document.addEventListener('keydown',function(e){
     if(mo&&mo.classList.contains('open')) closeModal();
     var so=document.getElementById('share-overlay');
     if(so&&so.classList.contains('open')) closeShareModal();
+    var vo=document.getElementById("video-overlay");
+    if(vo&&vo.classList.contains("open")) closeVideoModal();
   }
 });
 
@@ -669,6 +718,7 @@ function renderPlanner(){
       <div class="ex-num">${i+1}</div>
       <div class="ex-info"><h4>${displayName(ex)}</h4><div class="ex-meta">${ex.level_cn||formatLabel(ex.level)} · ${ex.category_cn||formatLabel(ex.category)} · ${(ex.primaryMuscles_cn||ex.primaryMuscles||[]).join('、')}</div></div>
       <div class="ex-sets"><label>组</label><input type="number" min="1" max="10" value="${item.sets}" onchange="updateSets(${i},'sets',this.value)"><label>次</label><input type="text" value="${item.reps}" onchange="updateSets(${i},'reps',this.value)"></div>
+      <button class="ex-video" onclick="openVideoSearch(${ex.id})" title="视频教程">📺 视频</button>
       <button class="ex-remove" onclick="removeFromPlan(${i})" title="移除">✕</button>
     </div>`;
   }).join('');
@@ -709,6 +759,7 @@ function encodeShareData(plan){
   return btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g,function(_,p){
     return String.fromCharCode(parseInt(p,16));
   }));
+}
 function openShareModal(){
   var overlay=document.getElementById('share-overlay');
   overlay._prevFocus=document.activeElement;
@@ -797,6 +848,7 @@ function buildStandalonePage(plan, exerciseMap){
     '.ex-steps{margin-top:6px;font-size:0.6875rem;color:#94A3B8;line-height:1.6;display:none}' +
     '.ex-steps li{margin-bottom:3px}' +
     '.ex-steps li::marker{color:#F97316}' +
+    '.ex-video-link{display:inline-block;margin-top:6px;font-size:0.6875rem;color:#60A5FA;text-decoration:none;border:1px solid rgba(59,130,246,0.3);padding:3px 8px;border-radius:6px;transition:all .2s}.ex-video-link:hover{background:rgba(59,130,246,0.1);border-color:#3B82F6}' +
     '.empty{text-align:center;padding:40px 16px;color:#94A3B8}' +
     '.footer{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #334155;color:#64748B;font-size:0.6875rem}' +
     '<\/style>\n<\/head>\n<body>\n<h1>FitForge 训练计划</h1>\n' +
@@ -824,6 +876,7 @@ function buildPlanHTML(plan, exerciseMap){
       }
       html += '<\/div>';
       html += '<div class=\"ex-dose\">' + item.sets + '\u7ec4 x ' + item.reps + '\u6b21<\/div>';
+      html += '<a class="ex-video-link" href="https://search.bilibili.com/all?keyword=' + encodeURIComponent('健身 ' + ex.name) + '&order=click" target="_blank" rel="noopener">📺 观看教程</a>';
       html += '<\/div>';
     });
     html += '<\/div>';
@@ -859,6 +912,35 @@ function showToast(msg){
   const toast=document.getElementById('toast');
   toast.textContent=msg; toast.classList.add('show');
   clearTimeout(toast._timeout); toast._timeout=setTimeout(()=>toast.classList.remove('show'),2000);
+}
+
+// ===== 视频教程搜索 =====
+// 打开视频搜索 —— 直接跳转B站/抖音搜索，100%可靠
+function openVideoSearch(exerciseId) {
+  var ex = allExercises.find(function(e) { return e.id === exerciseId; });
+  if (!ex) return;
+  var cnName = displayName(ex);
+  var keyword = encodeURIComponent('健身教程 ' + cnName);
+  
+  document.getElementById('video-title').textContent = '📺 ' + cnName + ' - 视频教程';
+  document.getElementById('video-subtitle').textContent = '选择平台搜索该动作的中文教学视频';
+  
+  document.getElementById('link-bilibili').href = 'https://search.bilibili.com/all?keyword=' + keyword + '&order=click';
+  document.getElementById('link-douyin').href = 'https://www.douyin.com/search/' + keyword + '?type=general';
+  
+  document.getElementById('video-results').innerHTML = 
+    '<div style="text-align:center;padding:20px;color:var(--color-text-muted)">' +
+    '<p style="margin-bottom:12px">点击下方按钮在新标签页打开搜索</p>' +
+    '<p style="font-size:0.75rem">B站和抖音有海量中文健身教学视频</p>' +
+    '</div>';
+  
+  document.getElementById('video-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+  document.getElementById('video-overlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 // ===== INIT =====
