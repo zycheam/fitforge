@@ -793,8 +793,10 @@ function showToast(msg){
 }
 
 // ===== 视频教程搜索 =====
-// 打开视频搜索 —— B站API搜索 + 内嵌播放器
-var videoSearchResults = [];
+// 视频教程 —— B站/抖音搜索链接在新标签页打开
+// 注意：B站API(api.bilibili.com)有CORS + Wbi反爬限制
+// 静态前端无法直接调用搜索API，改用可靠的搜索链接方式
+var BV_CACHE = {};
 
 function openVideoSearch(exerciseId) {
   var ex = allExercises.find(function(e) { return e.id === exerciseId; });
@@ -804,85 +806,37 @@ function openVideoSearch(exerciseId) {
   var keyword = encodeURIComponent(keywordRaw);
 
   document.getElementById('video-title').textContent = '📺 ' + cnName + ' - 视频教程';
-  document.getElementById('video-subtitle').textContent = '正在B站搜索「' + keywordRaw + '」…';
-  document.getElementById('link-bilibili').href = 'https://search.bilibili.com/all?keyword=' + keyword + '&order=click';
-  document.getElementById('link-douyin').href = 'https://www.douyin.com/search/' + keyword + '?type=general';
-  document.getElementById('video-results').innerHTML = '<div class="video-loading">🔍 正在搜索B站视频...</div>';
-  document.getElementById('video-search-links').style.display = 'none';
+  document.getElementById('video-subtitle').textContent = '搜索关键词：' + keywordRaw;
   document.getElementById('video-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  document.getElementById('video-search-links').style.display = 'flex';
 
-  var apiUrl = 'https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=' + keyword + '&page=1';
-  fetch(apiUrl)
-    .then(function(res) { return res.json(); })
-    .then(function(json) {
-      videoSearchResults = (json.data && json.data.result) || [];
-      if (!videoSearchResults.length) throw new Error('无搜索结果');
-      renderVideoList();
-      // 自动播放第一个视频
-      playVideo(0);
-    })
-    .catch(function(err) {
-      console.warn('B站API失败:', err.message);
-      fallbackVideoLinks(keywordRaw);
-    });
-}
+  document.getElementById('link-bilibili').href = 'https://search.bilibili.com/all?keyword=' + keyword + '&order=click';
+  document.getElementById('link-douyin').href = 'https://www.douyin.com/search/' + keyword + '?type=general';
 
-function renderVideoList() {
-  var html = '';
-  videoSearchResults.slice(0, 8).forEach(function(v, i) {
-    var title = (v.title || '').replace(/<em class="keyword">/g, '').replace(/<\/em>/g, '');
-    var author = v.author || '';
-    var play = v.play || 0;
-    var playStr = play > 10000 ? (play/10000).toFixed(1) + '万' : play;
-    var pic = v.pic || '';
-    var duration = v.duration || '';
-    html += '<div class="video-item' + (i===0?' active':'') + '" onclick="playVideo(' + i + ')" id="vitem-' + i + '">' +
-      '<img class="thumb" src="' + pic + '@200w.jpg" alt="" loading="lazy" onerror="this.style.display=' + "'none'" + '">' +
-      '<div class="v-info">' +
-        '<div class="v-title">' + title + '</div>' +
-        '<div class="v-meta">' + author + ' · ▶ ' + playStr + '播放' + (duration ? ' · ' + duration : '') + '</div>' +
+  var cached = BV_CACHE[exerciseId];
+  if (cached && cached.bvid) {
+    var src = '//player.bilibili.com/player.html?bvid=' + cached.bvid + '&page=1&high_quality=1&danmaku=0';
+    var title = cached.title || '';
+    var author = cached.author || '';
+    document.getElementById('video-results').innerHTML =
+      '<div class="video-embed">' +
+        '<iframe src="' + src + '" allowfullscreen allow="autoplay; encrypted-media; fullscreen" ' +
+          'sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" ' +
+          'style="width:100%;height:360px;border:none;border-radius:8px" loading="lazy">' +
+        '</iframe>' +
       '</div>' +
-    '</div>';
-  });
-  document.getElementById('video-results').innerHTML = '<div class="video-player-wrap" id="video-player-wrap"></div><div class="video-list-label">更多相关视频</div>' + html;
-}
-
-function playVideo(index) {
-  var v = videoSearchResults[index];
-  if (!v || !v.bvid) return;
-  // 高亮当前选中
-  var items = document.querySelectorAll('.video-item');
-  items.forEach(function(item, i) { item.classList.toggle('active', i === index); });
-  // 嵌入B站播放器
-  var playerHtml = '<div class="video-embed">' +
-    '<iframe src="//player.bilibili.com/player.html?bvid=' + v.bvid + '&page=1&high_quality=1&autoplay=1&danmaku=0" ' +
-      'allowfullscreen allow="autoplay; encrypted-media; fullscreen" ' +
-      'sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" ' +
-      'style="width:100%;height:100%;border:none;border-radius:8px" ' +
-      'loading="lazy">' +
-    '</iframe></div>';
-  document.getElementById('video-player-wrap').innerHTML = playerHtml;
-  // 显示搜索链接
-  document.getElementById('video-search-links').style.display = 'flex';
-}
-
-function fallbackVideoLinks(keywordRaw) {
-  document.getElementById('video-search-links').style.display = 'flex';
-  document.getElementById('video-results').innerHTML =
-    '<div style="text-align:center;padding:30px 20px;color:var(--text-muted)">' +
-    '<p style="margin-bottom:12px;color:var(--text-heading);font-size:15px">⚠️ B站API暂不可用</p>' +
-    '<p style="margin-bottom:16px;font-size:13px">点击下方按钮在新标签页搜索「' + keywordRaw + '」</p>' +
-    '</div>';
-}
-
-function closeVideoModal() {
-  document.getElementById('video-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-  // 停止iframe播放
-  var wrap = document.getElementById('video-player-wrap');
-  if (wrap) wrap.innerHTML = '';
-  videoSearchResults = [];
+      '<div style="text-align:center;padding:8px 12px;font-size:11px;color:var(--text-muted)">' +
+        title + ' · UP: ' + author +
+      '</div>';
+  } else {
+    document.getElementById('video-results').innerHTML =
+      '<div style="text-align:center;padding:40px 20px;color:var(--text-muted)">' +
+      '<div style="font-size:48px;margin-bottom:16px">🔍</div>' +
+      '<p style="margin-bottom:12px;color:var(--text-heading);font-size:15px;font-weight:600">搜索「' + keywordRaw + '」</p>' +
+      '<p style="font-size:13px;line-height:1.6">点击下方按钮在新标签页查看教程</p>' +
+      '</div>';
+  }
 }
 
 function closeVideoModal() {
