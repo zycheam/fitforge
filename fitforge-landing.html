@@ -4,181 +4,649 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FitForge — AI 驱动的智能健身平台</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<meta name="description" content="FitForge 结合人工智能与运动科学，为你生成个性化训练计划、实时纠正动作、追踪每一组数据。不再猜测，科学增肌。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
+/* ============================================================
+   FitForge Landing — Dylanbrouwer 极简建筑风格
+   设计参考: Refero Design / dylanbrouwer.design
+   色板: Carbon / Silver / Warm Orange
+   字体: IBM Plex Mono + Inter (替代 Die Grotesk B)
+   核心哲学: type as architecture on plaster
+   ============================================================ */
+
 :root {
-  --color-primary: #F97316;
-  --color-secondary: #FB923C;
-  --color-accent: #22C55E;
-  --color-bg: #0F172A;
-  --color-bg-card: #1E293B;
-  --color-surface: #1F2937;
-  --color-muted: #37414F;
-  --color-border: #334155;
-  --color-foreground: #F8FAFC;
-  --color-text: #E2E8F0;
-  --color-text-muted: #94A3B8;
-  --color-destructive: #EF4444;
-  --font-heading: 'Barlow Condensed', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-body: 'Barlow', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --radius: 16px;
-  --radius-sm: 8px;
-  --transition: 200ms ease;
+  --bg-primary: #161616;
+  --bg-surface: #201d1d;
+  --bg-card: #252225;
+  --bg-light: #201d1d;
+  --text-primary: #c9c7cc;
+  --text-secondary: #a2a2a2;
+  --text-heading: #ffffff;
+  --text-muted: #7b7a7c;
+  --accent: #ff6436;
+  --accent-dim: rgba(255, 100, 54, 0.1);
+  --font-mono: 'IBM Plex Mono', 'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --transition: 300ms ease;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background: var(--bg-primary); }
+
 body {
-  font-family: var(--font-body);
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.3;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+/* ============================================================
+   容器
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 
-/* Nav */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(15,23,42,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--color-border); }
-.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-.nav-logo { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -1px; }
-.nav-links { display: flex; gap: 32px; list-style: none; }
-.nav-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.938rem; font-weight: 500; transition: color var(--transition); }
-.nav-links a:hover { color: var(--color-foreground); }
-.nav-cta { background: var(--color-accent); color: var(--color-bg); border: none; padding: 10px 24px; border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 600; font-size: 0.938rem; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition); }
-.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+/* ============================================================
+   导航 — 透明极简
+   ============================================================ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  background: rgba(22, 22, 22, 0.92);
+  backdrop-filter: blur(12px);
+}
 
-/* Hero */
-.hero { padding: 160px 0 100px; position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
-.hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 80%, rgba(34,197,94,0.04) 0%, transparent 50%); pointer-events: none; }
-.hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; position: relative; z-index: 1; }
-.hero-tag { display: inline-block; background: rgba(249,115,22,0.15); color: var(--color-primary); font-size: 0.875rem; font-weight: 600; padding: 6px 16px; border-radius: 999px; margin-bottom: 24px; }
-.hero h1 { font-family: var(--font-heading); font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 800; color: var(--color-foreground); line-height: 1.05; letter-spacing: -1px; margin-bottom: 24px; }
-.hero h1 span { color: var(--color-primary); }
-.hero p { font-size: 1.125rem; color: var(--color-text-muted); max-width: 460px; margin-bottom: 36px; }
-.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
-.btn-primary { background: var(--color-accent); color: var(--color-bg); border: none; padding: 14px 32px; border-radius: var(--radius-sm); font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-.btn-outline { background: transparent; color: var(--color-foreground); border: 2px solid var(--color-border); padding: 14px 32px; border-radius: var(--radius-sm); font-size: 1rem; font-weight: 600; cursor: pointer; transition: border-color var(--transition), color var(--transition); }
-.btn-outline:hover { border-color: var(--color-primary); color: var(--color-primary); }
-.hero-visual { position: relative; }
-.hero-visual .card { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 24px; }
-.hero-visual .stat-row { display: flex; gap: 16px; margin-top: 16px; }
-.hero-visual .stat { flex: 1; background: rgba(249,115,22,0.08); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
-.hero-visual .stat .num { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 700; color: var(--color-primary); }
-.hero-visual .stat .label { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px; }
+.nav-inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-/* Section */
-.section { padding: 100px 0; }
-.section-header { text-align: center; margin-bottom: 64px; }
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
 
-.section h2 { font-family: var(--font-heading); font-size: clamp(2.25rem, 4vw, 3rem); font-weight: 700; color: var(--color-foreground); letter-spacing: -0.5px; margin-bottom: 16px; }
-.section-desc { color: var(--color-text-muted); font-size: 1.063rem; max-width: 560px; margin: 0 auto; }
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
 
-/* Features */
-.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
-.feature-card { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 32px; transition: transform var(--transition), border-color var(--transition); position: relative; overflow: hidden; }
-.feature-card:hover { transform: translateY(-4px); border-color: var(--color-primary); }
-.feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--color-primary), var(--color-accent)); transform: scaleX(0); transform-origin: left; transition: transform 300ms ease; }
-.feature-card:hover::before { transform: scaleX(1); }
-.feature-icon { width: 48px; height: 48px; background: rgba(249,115,22,0.12); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-.feature-icon svg { width: 24px; height: 24px; stroke: var(--color-primary); }
-.feature-card h3 { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; color: var(--color-foreground); margin-bottom: 8px; }
-.feature-card p { color: var(--color-text-muted); font-size: 0.938rem; }
+.nav-links a {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: color var(--transition);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
 
-/* How It Works */
-.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; counter-reset: step; }
-.step { text-align: center; position: relative; }
-.step-num { width: 56px; height: 56px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: #fff; }
-.step h3 { font-family: var(--font-heading); font-size: 1.25rem; color: var(--color-foreground); margin-bottom: 8px; }
-.step p { color: var(--color-text-muted); font-size: 0.938rem; }
-.step-connector { position: absolute; top: 28px; left: calc(50% + 56px); width: calc(100% - 112px); height: 2px; background: var(--color-border); }
-.step:last-child .step-connector { display: none; }
+.nav-links a:hover { color: var(--text-heading); }
 
-/* Stats */
-.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
-.stat-item { text-align: center; padding: 40px 20px; border-right: 1px solid var(--color-border); }
-.stat-item:last-child { border-right: none; }
-.stat-item .big { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; color: var(--color-primary); line-height: 1; }
-.stat-item .lbl { color: var(--color-text-muted); font-size: 0.875rem; margin-top: 8px; }
+/* 按钮基础 — Pill 造型 */
+.nav-cta,
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--text-heading);
+  border: none;
+  padding: 6px 16px;
+  min-height: 32px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: opacity var(--transition), transform var(--transition);
+  line-height: 1;
+  text-decoration: none;
+}
 
-/* Pricing */
-.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }
-.pricing-card { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 40px 32px; text-align: center; transition: transform var(--transition), border-color var(--transition); }
-.pricing-card:hover { transform: translateY(-4px); }
-.pricing-card.featured { border-color: var(--color-primary); position: relative; }
-.pricing-card.featured::before { content: '最受欢迎'; position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); background: var(--color-primary); color: var(--color-bg); font-size: 0.75rem; font-weight: 600; padding: 4px 16px; border-radius: 999px; white-space: nowrap; }
-.pricing-card h3 { font-family: var(--font-heading); font-size: 1.25rem; color: var(--color-foreground); }
-.pricing-card .price { font-family: var(--font-heading); font-size: 3rem; font-weight: 800; color: var(--color-foreground); margin: 16px 0 4px; }
-.pricing-card .price span { font-size: 1rem; font-weight: 400; color: var(--color-text-muted); }
-.pricing-card .period { color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 28px; }
-.pricing-features { list-style: none; text-align: left; margin-bottom: 32px; }
-.pricing-features li { padding: 8px 0; color: var(--color-text-muted); font-size: 0.938rem; display: flex; align-items: center; gap: 10px; }
-.pricing-features li svg { width: 18px; height: 18px; stroke: var(--color-accent); flex-shrink: 0; }
-.pricing-card .btn-primary { width: 100%; }
+.nav-cta:hover,
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
 
-/* CTA */
+/* 次按钮 — 幽灵文字 */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--text-heading);
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  text-decoration: none;
+  line-height: 1;
+}
+
+.btn-ghost:hover { opacity: 0.6; }
+
+/* ============================================================
+   Hero — 超大排版，左文右卡片
+   ============================================================ */
+.hero {
+  padding: 200px 0 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 50%; right: -5%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle at 40% 40%, rgba(255,100,54,0.04) 0%, transparent 60%);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 900;
+  color: var(--text-heading);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-primary);
+  line-height: 1.3;
+  max-width: 480px;
+  margin-bottom: 36px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Hero 右侧卡片 — 半透明无边框 */
+.hero-card {
+  padding: 24px;
+  background: var(--bg-surface);
+  border-radius: 14px;
+}
+
+.hero-card-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.hero-card-icon {
+  width: 40px; height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--accent-dim);
+  flex-shrink: 0;
+}
+
+.hero-card-icon svg { stroke: var(--accent); }
+
+.hero-card-title { font-size: 17px; font-weight: 600; color: var(--text-heading); line-height: 1.2; }
+.hero-card-sub  { font-size: 11px; color: var(--text-muted); line-height: 1.3; margin-top: 2px; font-family: var(--font-mono); text-transform: uppercase; }
+
+.hero-card-list { margin-bottom: 18px; }
+
+.hero-card-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 1.3;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.hero-card-item:last-child { border-bottom: none; }
+
+.hero-card-item span:first-child { color: var(--text-primary); }
+.hero-card-item .done { color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; }
+.hero-card-item .active { color: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+.hero-card-item .pending { color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; }
+
+.hero-card-stats { display: flex; gap: 24px; }
+
+.hero-stat { flex: 1; }
+
+.hero-stat-num {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hero-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   区块通用
+   ============================================================ */
+.section { padding: 80px 0; }
+
+.section-header { margin-bottom: 60px; }
+
+.section h2 {
+  font-family: var(--font-sans);
+  font-size: clamp(36px, 6vw, 60px);
+  font-weight: 900;
+  color: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.section-desc {
+  font-size: 17px;
+  color: var(--text-primary);
+  line-height: 1.3;
+  max-width: 560px;
+}
+
+/* ============================================================
+   功能卡片 — 无背景无边框无阴影
+   ============================================================ */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.04);
+}
+
+.feature-card {
+  padding: 40px 28px;
+  background: var(--bg-primary);
+  transition: background var(--transition);
+}
+
+.feature-card:hover { background: var(--bg-surface); }
+
+.feature-icon {
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  background: var(--accent-dim);
+}
+
+.feature-icon svg { stroke: var(--accent); }
+
+.feature-card h3 {
+  font-family: var(--font-sans);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text-heading);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/* ============================================================
+   使用流程 — 三步骤
+   ============================================================ */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+
+.step { position: relative; }
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 54px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.step h3 {
+  font-family: var(--font-sans);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text-heading);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.step p {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/* ============================================================
+   数据统计
+   ============================================================ */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.04);
+}
+
+.stat-item {
+  padding: 48px 28px;
+  background: var(--bg-primary);
+}
+
+.stat-item .big {
+  font-family: var(--font-mono);
+  font-size: 54px;
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.stat-item .lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   定价卡片
+   ============================================================ */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.04);
+  align-items: start;
+}
+
+.pricing-card {
+  padding: 40px 28px;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.pricing-card.featured {
+  background: var(--bg-surface);
+}
+
+.pricing-card h3 {
+  font-family: var(--font-sans);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text-heading);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.pricing-card .price {
+  font-family: var(--font-mono);
+  font-size: 54px;
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.pricing-card .price span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.pricing-card .period {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.pricing-features {
+  list-style: none;
+  margin-bottom: 36px;
+}
+
+.pricing-features li {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pricing-features li svg {
+  width: 14px; height: 14px;
+  stroke: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   CTA
+   ============================================================ */
 .cta { padding: 100px 0; }
-.cta-inner { background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(34,197,94,0.08)); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 72px 48px; text-align: center; }
-.cta-inner h2 { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; color: var(--color-foreground); margin-bottom: 16px; }
-.cta-inner p { color: var(--color-text-muted); font-size: 1.063rem; max-width: 520px; margin: 0 auto 32px; }
-.cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 
-/* Footer */
-.footer { border-top: 1px solid var(--color-border); padding: 48px 0 32px; }
-.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
-.footer-logo { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); }
-.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
-.footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color var(--transition); }
-.footer-links a:hover { color: var(--color-foreground); }
-.footer-copy { color: var(--color-text-muted); font-size: 0.8125rem; }
+.cta-inner { text-align: left; }
 
-/* Animations */
-@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes blurIn { from { opacity: 0; filter: blur(12px); transform: translateY(20px); } to { opacity: 1; filter: blur(0); transform: translateY(0); } }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); } 50% { box-shadow: 0 0 0 16px rgba(255,255,255,0); } }
-@keyframes countUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+.cta-inner h2 {
+  font-family: var(--font-sans);
+  font-size: clamp(36px, 6vw, 60px);
+  font-weight: 900;
+  color: var(--text-heading);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
 
-.animate-blur-in { animation: blurIn 800ms ease forwards; }
-.animate-fade-up { animation: fadeUp 600ms ease forwards; }
-.animate-float { animation: float 6s ease-in-out infinite; }
+.cta-inner p {
+  font-size: 17px;
+  color: var(--text-primary);
+  line-height: 1.3;
+  max-width: 560px;
+  margin-bottom: 36px;
+}
 
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity 600ms ease, transform 600ms ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.cta-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-.feature-card:nth-child(1) { animation-delay: 0ms; }
-.feature-card:nth-child(2) { animation-delay: 100ms; }
-.feature-card:nth-child(3) { animation-delay: 200ms; }
-.feature-card:nth-child(4) { animation-delay: 300ms; }
-.feature-card:nth-child(5) { animation-delay: 400ms; }
-.feature-card:nth-child(6) { animation-delay: 500ms; }
+/* ============================================================
+   页脚 — 单行极简
+   ============================================================ */
+.footer {
+  padding: 48px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-heading);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  text-transform: uppercase;
+  transition: color var(--transition);
+}
+
+.footer-links a:hover { color: var(--text-heading); }
+
+/* ============================================================
+   动画
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+}
 
 @media (max-width: 768px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-  .hero { padding: 120px 0 64px; }
+  .container { padding: 0 16px; }
+  .nav-inner { padding: 0 16px; }
+
+  .hero { padding: 140px 0 60px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero h1 { font-size: clamp(36px, 12vw, 60px); }
+  .hero::after { display: none; }
+
   .features-grid { grid-template-columns: 1fr; }
-  .steps { grid-template-columns: 1fr; }
-  .step-connector { display: none; }
+  .steps { grid-template-columns: 1fr; gap: 32px; }
   .stats-bar { grid-template-columns: repeat(2, 1fr); }
   .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+
   .nav-links { display: none; }
-  .stat-item { border-right: none; border-bottom: 1px solid var(--color-border); }
-  .stat-item:nth-child(2) { border-right: none; }
-  .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
+  .section { padding: 60px 0; }
+  .section h2 { font-size: 32px; }
+  .section-header { margin-bottom: 40px; }
 }
 
+/* ============================================================
+   无障碍 & 减少动画偏好
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-/* Focus visible ring for keyboard navigation */
-button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focus-visible {
-  outline: 2px solid var(--color-accent);
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -186,7 +654,10 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
 </head>
 <body>
 
-<nav class="nav">
+<!-- ============================================================
+     导航
+     ============================================================ -->
+<nav class="nav" role="navigation" aria-label="主导航">
   <div class="nav-inner">
     <div class="nav-logo">FITFORGE</div>
     <ul class="nav-links">
@@ -198,74 +669,129 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
   </div>
 </nav>
 
+<!-- ============================================================
+     Hero
+     ============================================================ -->
 <section class="hero">
   <div class="container hero-inner">
     <div>
-      <div class="hero-tag animate-blur-in">🚀 AI 驱动 · 智能训练</div>
-      <h1 class="animate-blur-in" style="animation-delay:100ms">用 AI 锻造<br><span>你的巅峰体型</span></h1>
-      <p class="animate-blur-in" style="animation-delay:200ms">FitForge 结合人工智能与运动科学，为你生成个性化训练计划、实时纠正动作、追踪每一组数据。不再猜测，科学增肌。</p>
-      <div class="hero-actions animate-blur-in" style="animation-delay:300ms">
+      <p class="hero-eyebrow reveal">AI 驱动 · 智能训练</p>
+      <h1 class="reveal">用 AI 锻造<br><em>你的巅峰体型</em></h1>
+      <p class="reveal">FitForge 结合人工智能与运动科学，为你生成个性化训练计划、实时纠正动作、追踪每一组数据。不再猜测，科学增肌。</p>
+      <div class="hero-actions reveal">
         <button class="btn-primary" onclick="location.href='index.html'">进入应用</button>
-        <button class="btn-outline" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">了解工作原理</button>
+        <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">了解工作原理 →</button>
       </div>
     </div>
-    <div class="hero-visual animate-float">
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-          <div style="width:40px;height:40px;background:rgba(249,115,22,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div><div style="font-weight:600;color:#F8FAFC">今日训练</div><div style="font-size:0.75rem;color:#94A3B8">胸部 + 三头肌</div></div>
+
+    <div class="hero-card reveal">
+      <!-- 今日训练标题 -->
+      <div class="hero-card-row">
+        <div class="hero-card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
         </div>
-        <div style="background:rgba(249,115,22,0.06);border-radius:8px;padding:12px">
-          <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:6px"><span style="color:#E2E8F0">卧推 4×8</span><span style="color:#22C55E">✓ 完成</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:6px"><span style="color:#E2E8F0">哑铃飞鸟 3×12</span><span style="color:#F97316">进行中</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:0.875rem"><span style="color:#E2E8F0">绳索下压 3×15</span><span style="color:#94A3B8">待完成</span></div>
+        <div>
+          <div class="hero-card-title">今日训练</div>
+          <div class="hero-card-sub">胸部 + 三头肌</div>
         </div>
-        <div class="stat-row">
-          <div class="stat"><div class="num">2,450</div><div class="label">kcal/周</div></div>
-          <div class="stat"><div class="num">85%</div><div class="label">完成率</div></div>
-          <div class="stat"><div class="num">+12</div><div class="label">力量增长%</div></div>
-        </div>
+      </div>
+
+      <!-- 训练列表 -->
+      <div class="hero-card-list">
+        <div class="hero-card-item"><span>卧推 4×8</span><span class="done">✓ 完成</span></div>
+        <div class="hero-card-item"><span>哑铃飞鸟 3×12</span><span class="active">进行中</span></div>
+        <div class="hero-card-item"><span>绳索下压 3×15</span><span class="pending">待完成</span></div>
+      </div>
+
+      <!-- 数据统计 -->
+      <div class="hero-card-stats">
+        <div class="hero-stat"><div class="hero-stat-num">2,450</div><div class="hero-stat-lbl">kcal/周</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">85%</div><div class="hero-stat-lbl">完成率</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">+12</div><div class="hero-stat-lbl">力量增长%</div></div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================================================
+     功能特性
+     ============================================================ -->
 <section class="section" id="features">
   <div class="container">
     <div class="section-header reveal">
       <h2>科学训练所需的一切</h2>
       <p class="section-desc">从计划生成到动作纠正，FitForge 覆盖你健身旅程的每一个环节</p>
     </div>
+
     <div class="features-grid">
       <div class="feature-card reveal">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <line x1="9" y1="9" x2="15" y2="9"/>
+            <line x1="9" y1="13" x2="15" y2="13"/>
+            <line x1="9" y1="17" x2="12" y2="17"/>
+          </svg>
+        </div>
         <h3>AI 训练计划生成</h3>
-        <p>输入你的目标、装备和可用时间，AI 在 30 秒内生成科学分化的周训练计划，支持增肌、减脂、力量三种模式。</p>
+        <p>输入你的目标、装备和可用时间，AI 在 30 秒内生成为你量身定制的科学分化周训练计划，支持增肌、减脂、力量三种模式。</p>
       </div>
+
       <div class="feature-card reveal">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
         <h3>实时动作分析</h3>
         <p>手机摄像头捕捉你的训练动作，AI 实时分析关节角度和运动轨迹，即时纠正错误姿势，降低受伤风险。</p>
       </div>
+
       <div class="feature-card reveal">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
         <h3>训练数据可视化</h3>
         <p>自动追踪每次训练的体积、强度和疲劳度，通过直观图表展示力量和肌肉的增长趋势。</p>
       </div>
+
       <div class="feature-card reveal">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
         <h3>智能饮食建议</h3>
-        <p>根据你的训练目标和身体数据，自动计算每日热量和宏量营养素配比，推荐适配的餐食方案。</p>
+        <p>根据你的训练目标和身体数据，自动计算每日热量和宏量营养素配比，推荐适配的饮食方案。</p>
       </div>
+
       <div class="feature-card reveal">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
         <h3>社区挑战 & 排行榜</h3>
-        <p>参与每周训练挑战，与全球健身爱好者竞赛，在排行榜上攀升，让训练动力不枯竭。</p>
+        <p>参与每周训练挑战，与全球健身爱好者竞赛，在排行榜上攀升，让训练动力永不枯竭。</p>
       </div>
+
       <div class="feature-card reveal">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
         <h3>数据安全 & 隐私</h3>
         <p>你的健康数据采用端到端加密存储，符合 GDPR 和 HIPAA 标准。你的身体数据只属于你自己。</p>
       </div>
@@ -273,27 +799,29 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
   </div>
 </section>
 
-<section class="section" id="how" style="background:rgba(249,115,22,0.02)">
+<!-- ============================================================
+     使用流程
+     ============================================================ -->
+<section class="section" id="how">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <h2>三步开启科学训练</h2>
       <p class="section-desc">从下载到第一次训练，只需 5 分钟</p>
     </div>
+
     <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
+      <div class="step reveal">
+        <div class="step-num">01</div>
         <h3>设定目标</h3>
         <p>选择增肌、减脂或力量，输入你的训练经验和可用器械</p>
-        <div class="step-connector"></div>
       </div>
-      <div class="step" style="transition-delay:150ms">
-        <div class="step-num">2</div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
         <h3>获取计划</h3>
-        <p>AI 在 30 秒内生成个性化周训练计划，支持随时调整</p>
-        <div class="step-connector"></div>
+        <p>AI 在 30 秒内生成为你量身定制的个性化周训练计划，支持随时调整</p>
       </div>
-      <div class="step" style="transition-delay:300ms">
-        <div class="step-num">3</div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
         <h3>开始训练</h3>
         <p>跟随指导完成训练，AI 实时纠正动作并记录全部数据</p>
       </div>
@@ -301,25 +829,32 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
   </div>
 </section>
 
+<!-- ============================================================
+     数据统计
+     ============================================================ -->
 <section class="section">
   <div class="container">
     <div class="stats-bar">
-      <div class="stat-item"><div class="big">50K+</div><div class="lbl">活跃用户</div></div>
-      <div class="stat-item"><div class="big">2.3M</div><div class="lbl">训练完成</div></div>
-      <div class="stat-item"><div class="big">98%</div><div class="lbl">用户满意度</div></div>
-      <div class="stat-item"><div class="big">4.9</div><div class="lbl">App Store 评分</div></div>
+      <div class="stat-item reveal"><div class="big">50K+</div><div class="lbl">活跃用户</div></div>
+      <div class="stat-item reveal"><div class="big">2.3M</div><div class="lbl">训练完成</div></div>
+      <div class="stat-item reveal"><div class="big">98%</div><div class="lbl">用户满意度</div></div>
+      <div class="stat-item reveal"><div class="big">4.9</div><div class="lbl">评分</div></div>
     </div>
   </div>
 </section>
 
-<section class="section" id="pricing" style="background:rgba(249,115,22,0.02)">
+<!-- ============================================================
+     定价
+     ============================================================ -->
+<section class="section" id="pricing">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <h2>选择适合你的计划</h2>
       <p class="section-desc">所有方案均包含 14 天免费试用，无需信用卡</p>
     </div>
+
     <div class="pricing-grid">
-      <div class="pricing-card">
+      <div class="pricing-card reveal">
         <h3>入门版</h3>
         <div class="price">¥0<span>/月</span></div>
         <div class="period">永久免费</div>
@@ -328,9 +863,10 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>每周 3 次计划更新</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>基础数据追踪</li>
         </ul>
-        <button class="btn-outline" style="width:100%" onclick="location.href='index.html'">免费开始</button>
+        <button class="btn-ghost" onclick="location.href='index.html'">免费开始 →</button>
       </div>
-      <div class="pricing-card featured" style="transition-delay:150ms">
+
+      <div class="pricing-card featured reveal">
         <h3>专业版</h3>
         <div class="price">¥49<span>/月</span></div>
         <div class="period">年付 ¥468（省 ¥120）</div>
@@ -338,45 +874,52 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>无限 AI 计划生成</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>实时动作分析</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>高级数据可视化</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>饮食建议 & 餐食计划</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>饮食建议 & 餐饮计划</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>社区挑战 & 排行榜</li>
         </ul>
         <button class="btn-primary">开始 14 天试用</button>
       </div>
-      <div class="pricing-card" style="transition-delay:300ms">
+
+      <div class="pricing-card reveal">
         <h3>团队版</h3>
         <div class="price">¥99<span>/月</span></div>
-        <div class="period">最多 10 名成员</div>
+        <div class="period">最大 10 名成员</div>
         <ul class="pricing-features">
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>专业版全部功能</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>团队管理面板</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>教练协作模式</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>API 接入 & SSO</li>
         </ul>
-        <button class="btn-outline" style="width:100%">联系销售</button>
+        <button class="btn-ghost">联系销售 →</button>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================================================
+     CTA
+     ============================================================ -->
 <section class="cta">
   <div class="container">
-    <div class="cta-inner">
+    <div class="cta-inner reveal">
       <h2>准备好锻造全新的自己了吗？</h2>
       <p>加入 50,000+ 用户，用 AI 驱动你的每一次训练。14 天免费试用，随时取消。</p>
       <div class="cta-actions">
-        <button class="btn-primary" style="font-size:1.125rem;padding:16px 40px" onclick="location.href='index.html'">免费开始训练</button>
-        <button class="btn-outline" style="font-size:1.125rem;padding:16px 40px">预约演示</button>
+        <button class="btn-primary" onclick="location.href='index.html'">免费开始训练</button>
+        <button class="btn-ghost">预约演示 →</button>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============================================================
+     页脚
+     ============================================================ -->
 <footer class="footer">
   <div class="container footer-inner">
     <div>
       <div class="footer-logo">FITFORGE</div>
-      <div class="footer-copy" style="margin-top:4px">© 2026 FitForge 版权所有</div>
+      <div class="footer-copy">© 2026 FitForge 版权所有</div>
     </div>
     <ul class="footer-links">
       <li><a href="#features">功能</a></li>
@@ -388,10 +931,15 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .nav-cta:focu
   </div>
 </footer>
 
+<!-- ============================================================
+     滚动揭示动画
+     ============================================================ -->
 <script>
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
   });
 }, { threshold: 0.15 });
 
@@ -400,5 +948,3 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 </body>
 </html>
-
-.feature-card:nth-child(5), .feature-card:nth-child(6) { animation: none; opacity: 1; transform: none; }
