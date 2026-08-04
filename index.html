@@ -162,7 +162,7 @@ body { font-family: var(--font-sans); background: var(--bg-primary); color: var(
 .btn-danger:hover { background: rgba(239,68,68,0.1); }
 .video-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 16px; }
 .video-modal-overlay.open { display: flex; }
-.video-modal { background: var(--bg-surface); border: 1px solid var(--border-hover); border-radius: var(--radius); width: 100%; max-width: 620px; max-height: 85vh; overflow-y: auto; padding: 24px; position: relative; }
+.video-modal { background: var(--bg-surface); border: 1px solid var(--border-hover); border-radius: var(--radius); width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; padding: 24px; position: relative; }
 .video-modal h3 { font-family: var(--font-sans); font-size: 17px; color: var(--text-heading); margin-bottom: 4px; }
 .video-modal .video-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
 .video-modal .video-search-links { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -178,6 +178,13 @@ body { font-family: var(--font-sans); background: var(--bg-primary); color: var(
 .video-modal .video-item .v-info { flex: 1; min-width: 0; }
 .video-modal .video-item .v-title { font-size: 13px; color: var(--text-heading); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .video-modal .video-item .v-meta { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+.video-player-wrap { margin-bottom: 14px; }
+.video-embed { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 8px; overflow: hidden; background: #000; }
+.video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.video-list-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.02em; }
+.video-item.active { border-color: var(--accent) !important; background: var(--bg-surface); }
+.video-item.active::before { content: '▶ 正在播放'; font-family: var(--font-mono); font-size: 9px; color: var(--accent); position: absolute; top: 6px; right: 10px; }
+.video-item { position: relative; }
 .video-modal .video-loading { text-align: center; color: var(--text-muted); padding: 20px; font-size: 13px; }
 .video-modal .video-error { text-align: center; color: #F87171; padding: 16px; font-size: 13px; }
 .video-modal .modal-close { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px 8px; }
@@ -307,7 +314,7 @@ button:focus-visible, a:focus-visible, .filter-chip:focus-visible, .muscle-chip:
     <button class="modal-close" onclick="closeVideoModal()" aria-label="关闭">✕</button>
     <h3 id="video-title">📺 视频教程</h3>
     <p class="video-subtitle" id="video-subtitle"></p>
-    <div class="video-search-links">
+    <div class="video-search-links" id="video-search-links" style="display:none">
       <a href="#" class="link-bilibili" id="link-bilibili" target="_blank" rel="noopener">📺 在B站搜索</a>
       <a href="#" class="link-douyin" id="link-douyin" target="_blank" rel="noopener">🎵 在抖音搜索</a>
     </div>
@@ -786,7 +793,9 @@ function showToast(msg){
 }
 
 // ===== 视频教程搜索 =====
-// 打开视频搜索 —— B站API搜索 + 降级手动链接
+// 打开视频搜索 —— B站API搜索 + 内嵌播放器
+var videoSearchResults = [];
+
 function openVideoSearch(exerciseId) {
   var ex = allExercises.find(function(e) { return e.id === exerciseId; });
   if (!ex) { console.warn('未找到动作:', exerciseId); return; }
@@ -795,64 +804,85 @@ function openVideoSearch(exerciseId) {
   var keyword = encodeURIComponent(keywordRaw);
 
   document.getElementById('video-title').textContent = '📺 ' + cnName + ' - 视频教程';
-  document.getElementById('video-subtitle').textContent = '正在B站搜索「' + keywordRaw + '」的相关教学视频';
-
-  // 设置降级链接
+  document.getElementById('video-subtitle').textContent = '正在B站搜索「' + keywordRaw + '」…';
   document.getElementById('link-bilibili').href = 'https://search.bilibili.com/all?keyword=' + keyword + '&order=click';
   document.getElementById('link-douyin').href = 'https://www.douyin.com/search/' + keyword + '?type=general';
-
   document.getElementById('video-results').innerHTML = '<div class="video-loading">🔍 正在搜索B站视频...</div>';
+  document.getElementById('video-search-links').style.display = 'none';
   document.getElementById('video-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  // B站API搜索
   var apiUrl = 'https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=' + keyword + '&page=1';
   fetch(apiUrl)
     .then(function(res) { return res.json(); })
     .then(function(json) {
-      var results = json.data && json.data.result ? json.data.result : [];
-      if (!results.length) throw new Error('无搜索结果');
-      renderVideoResults(results, cnName);
+      videoSearchResults = (json.data && json.data.result) || [];
+      if (!videoSearchResults.length) throw new Error('无搜索结果');
+      renderVideoList();
+      // 自动播放第一个视频
+      playVideo(0);
     })
     .catch(function(err) {
-      console.warn('B站API失败, 降级为手动搜索:', err.message);
+      console.warn('B站API失败:', err.message);
       fallbackVideoLinks(keywordRaw);
     });
 }
 
-function renderVideoResults(results, exerciseName) {
-  if (!results.length) { fallbackVideoLinks(exerciseName); return; }
-  var top6 = results.slice(0, 6);
-  var html = top6.map(function(v) {
+function renderVideoList() {
+  var html = '';
+  videoSearchResults.slice(0, 8).forEach(function(v, i) {
     var title = (v.title || '').replace(/<em class="keyword">/g, '').replace(/<\/em>/g, '');
     var author = v.author || '';
     var play = v.play || 0;
     var playStr = play > 10000 ? (play/10000).toFixed(1) + '万' : play;
     var pic = v.pic || '';
-    var url = 'https://www.bilibili.com/video/' + (v.bvid || '');
     var duration = v.duration || '';
-    return '<a class="video-item" href="' + url + '" target="_blank" rel="noopener">' +
+    html += '<div class="video-item' + (i===0?' active':'') + '" onclick="playVideo(' + i + ')" id="vitem-' + i + '">' +
       '<img class="thumb" src="' + pic + '@200w.jpg" alt="" loading="lazy" onerror="this.style.display=' + "'none'" + '">' +
       '<div class="v-info">' +
         '<div class="v-title">' + title + '</div>' +
         '<div class="v-meta">' + author + ' · ▶ ' + playStr + '播放' + (duration ? ' · ' + duration : '') + '</div>' +
       '</div>' +
-    '</a>';
-  }).join('');
-  document.getElementById('video-results').innerHTML = html;
+    '</div>';
+  });
+  document.getElementById('video-results').innerHTML = '<div class="video-player-wrap" id="video-player-wrap"></div><div class="video-list-label">更多相关视频</div>' + html;
+}
+
+function playVideo(index) {
+  var v = videoSearchResults[index];
+  if (!v || !v.bvid) return;
+  // 高亮当前选中
+  var items = document.querySelectorAll('.video-item');
+  items.forEach(function(item, i) { item.classList.toggle('active', i === index); });
+  // 嵌入B站播放器
+  var playerHtml = '<div class="video-embed">' +
+    '<iframe src="//player.bilibili.com/player.html?bvid=' + v.bvid + '&page=1&high_quality=1&autoplay=1&danmaku=0" ' +
+      'allowfullscreen allow="autoplay; encrypted-media; fullscreen" ' +
+      'sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" ' +
+      'style="width:100%;height:100%;border:none;border-radius:8px" ' +
+      'loading="lazy">' +
+    '</iframe></div>';
+  document.getElementById('video-player-wrap').innerHTML = playerHtml;
+  // 显示搜索链接
+  document.getElementById('video-search-links').style.display = 'flex';
 }
 
 function fallbackVideoLinks(keywordRaw) {
+  document.getElementById('video-search-links').style.display = 'flex';
   document.getElementById('video-results').innerHTML =
-    '<div style="text-align:center;padding:20px;color:var(--text-muted)">' +
-    '<p style="margin-bottom:12px;color:var(--text-heading);font-size:15px">⚠️ 自动搜索暂不可用</p>' +
-    '<p style="margin-bottom:16px">点击下方按钮在新标签页打开「' + keywordRaw + '」的搜索结果</p>' +
+    '<div style="text-align:center;padding:30px 20px;color:var(--text-muted)">' +
+    '<p style="margin-bottom:12px;color:var(--text-heading);font-size:15px">⚠️ B站API暂不可用</p>' +
+    '<p style="margin-bottom:16px;font-size:13px">点击下方按钮在新标签页搜索「' + keywordRaw + '」</p>' +
     '</div>';
 }
 
 function closeVideoModal() {
   document.getElementById('video-overlay').classList.remove('open');
   document.body.style.overflow = '';
+  // 停止iframe播放
+  var wrap = document.getElementById('video-player-wrap');
+  if (wrap) wrap.innerHTML = '';
+  videoSearchResults = [];
 }
 
 function closeVideoModal() {
