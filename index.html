@@ -217,7 +217,7 @@ button:focus-visible, a:focus-visible, .filter-chip:focus-visible, .muscle-chip:
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         分享
       </button></li>
-      <li><a href="fitforge-landing.html" style="color:var(--color-text-muted);text-decoration:none;font-size:0.8125rem">首页</a></li>
+      <li><a href="fitforge-landing.html" style="color:var(--text-muted);text-decoration:none;font-size:0.8125rem">首页</a></li>
     </ul>
   </div>
 </nav>
@@ -289,10 +289,10 @@ button:focus-visible, a:focus-visible, .filter-chip:focus-visible, .muscle-chip:
     <p>微信扫码或复制链接发给好友，对方在浏览器打开即可查看</p>
     <div class="qr-wrap" id="qr-code"></div>
     <div style="display:flex;gap:6px;margin-bottom:12px">
-      <input type="text" id="share-url-box" readonly aria-label="分享链接" style="display:none;flex:1;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:8px 10px;color:var(--color-text);font-size:0.6875rem;font-family:var(--font-body);text-overflow:ellipsis" onclick="this.select()">
+      <input type="text" id="share-url-box" readonly aria-label="分享链接" style="display:none;flex:1;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:8px 10px;color:var(--text-primary);font-size:0.6875rem;font-family:var(--font-sans);text-overflow:ellipsis" onclick="this.select()">
       <button class="btn-copy" id="btn-copy-url" onclick="copyShareUrl()" style="white-space:nowrap">复制链接</button>
     </div>
-    <div id="share-plan-preview" style="text-align:left;max-height:150px;overflow-y:auto;margin:8px 0;font-size:0.75rem;color:var(--color-text-muted);background:var(--color-bg);border-radius:var(--radius-sm);padding:10px;display:none"></div>
+    <div id="share-plan-preview" style="text-align:left;max-height:150px;overflow-y:auto;margin:8px 0;font-size:0.75rem;color:var(--text-muted);background:var(--bg-primary);border-radius:var(--radius-sm);padding:10px;display:none"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
       <button class="btn-copy" id="btn-download-share" onclick="downloadShareFile()" style="opacity:0.7">下载独立文件</button>
       <button class="btn-outline" onclick="closeShareModal()" style="padding:8px 20px;font-size:0.8125rem">关闭</button>
@@ -350,7 +350,7 @@ function loadData() {
     renderAll();
     document.getElementById('loading').style.display = 'none';
   } catch(e) {
-    document.getElementById('loading').innerHTML = '<p style="color:var(--color-error)">数据加载失败</p><p style="color:var(--color-text-muted);font-size:0.8125rem;margin-top:6px">请确保 exercises_data.js 与 index.html 在同一目录</p>';
+    document.getElementById('loading').innerHTML = '<p style="color:#F87171">数据加载失败</p><p style="color:var(--text-muted);font-size:0.8125rem;margin-top:6px">请确保 exercises_data.js 与 index.html 在同一目录</p>';
   }
 }
 
@@ -452,7 +452,7 @@ function renderGrid(){
   const start=(currentPage-1)*PAGE_SIZE;
   const items=filteredExercises.slice(start,start+PAGE_SIZE);
   if(!items.length){
-    grid.innerHTML='<div style="text-align:center;padding:60px 16px;color:var(--color-text-muted)"><p style="font-size:1rem">没有匹配的动作</p><p style="font-size:0.8125rem;margin-top:6px">尝试调整筛选条件</p></div>';
+    grid.innerHTML='<div style="text-align:center;padding:60px 16px;color:var(--text-muted)"><p style="font-size:1rem">没有匹配的动作</p><p style="font-size:0.8125rem;margin-top:6px">尝试调整筛选条件</p></div>';
     return;
   }
   grid.className='exercise-grid'+(currentView==='list'?' list':'');
@@ -640,7 +640,7 @@ function openShareModal(){
   var encoded=encodeShareData(plan);
   var shareUrl=SHARE_BASE_URL+'#share='+encoded;
   try{new QRCode(qrWrap,{text:shareUrl,width:220,height:220,colorDark:'#0F172A',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}
-  catch(e){qrWrap.innerHTML='<p style="color:var(--color-error);font-size:0.75rem">QR 生成失败，请复制链接分享</p>';}
+  catch(e){qrWrap.innerHTML='<p style="color:#F87171;font-size:0.75rem">QR 生成失败，请复制链接分享</p>';}
   var urlBox=document.getElementById('share-url-box');
   urlBox.value=shareUrl; urlBox.style.display='block';
   var preview=document.getElementById('share-plan-preview');
@@ -786,27 +786,73 @@ function showToast(msg){
 }
 
 // ===== 视频教程搜索 =====
-// 打开视频搜索 —— 直接跳转B站/抖音搜索，100%可靠
+// 打开视频搜索 —— B站API搜索 + 降级手动链接
 function openVideoSearch(exerciseId) {
   var ex = allExercises.find(function(e) { return e.id === exerciseId; });
-  if (!ex) return;
+  if (!ex) { console.warn('未找到动作:', exerciseId); return; }
   var cnName = displayName(ex);
-  var keyword = encodeURIComponent('健身教程 ' + cnName);
-  
+  var keywordRaw = '健身教程 ' + cnName;
+  var keyword = encodeURIComponent(keywordRaw);
+
   document.getElementById('video-title').textContent = '📺 ' + cnName + ' - 视频教程';
-  document.getElementById('video-subtitle').textContent = '选择平台搜索该动作的中文教学视频';
-  
+  document.getElementById('video-subtitle').textContent = '正在B站搜索「' + keywordRaw + '」的相关教学视频';
+
+  // 设置降级链接
   document.getElementById('link-bilibili').href = 'https://search.bilibili.com/all?keyword=' + keyword + '&order=click';
   document.getElementById('link-douyin').href = 'https://www.douyin.com/search/' + keyword + '?type=general';
-  
-  document.getElementById('video-results').innerHTML = 
-    '<div style="text-align:center;padding:20px;color:var(--color-text-muted)">' +
-    '<p style="margin-bottom:12px">点击下方按钮在新标签页打开搜索</p>' +
-    '<p style="font-size:0.75rem">B站和抖音有海量中文健身教学视频</p>' +
-    '</div>';
-  
+
+  document.getElementById('video-results').innerHTML = '<div class="video-loading">🔍 正在搜索B站视频...</div>';
   document.getElementById('video-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // B站API搜索
+  var apiUrl = 'https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=' + keyword + '&page=1';
+  fetch(apiUrl)
+    .then(function(res) { return res.json(); })
+    .then(function(json) {
+      var results = json.data && json.data.result ? json.data.result : [];
+      if (!results.length) throw new Error('无搜索结果');
+      renderVideoResults(results, cnName);
+    })
+    .catch(function(err) {
+      console.warn('B站API失败, 降级为手动搜索:', err.message);
+      fallbackVideoLinks(keywordRaw);
+    });
+}
+
+function renderVideoResults(results, exerciseName) {
+  if (!results.length) { fallbackVideoLinks(exerciseName); return; }
+  var top6 = results.slice(0, 6);
+  var html = top6.map(function(v) {
+    var title = (v.title || '').replace(/<em class="keyword">/g, '').replace(/<\/em>/g, '');
+    var author = v.author || '';
+    var play = v.play || 0;
+    var playStr = play > 10000 ? (play/10000).toFixed(1) + '万' : play;
+    var pic = v.pic || '';
+    var url = 'https://www.bilibili.com/video/' + (v.bvid || '');
+    var duration = v.duration || '';
+    return '<a class="video-item" href="' + url + '" target="_blank" rel="noopener">' +
+      '<img class="thumb" src="' + pic + '@200w.jpg" alt="" loading="lazy" onerror="this.style.display=' + "'none'" + '">' +
+      '<div class="v-info">' +
+        '<div class="v-title">' + title + '</div>' +
+        '<div class="v-meta">' + author + ' · ▶ ' + playStr + '播放' + (duration ? ' · ' + duration : '') + '</div>' +
+      '</div>' +
+    '</a>';
+  }).join('');
+  document.getElementById('video-results').innerHTML = html;
+}
+
+function fallbackVideoLinks(keywordRaw) {
+  document.getElementById('video-results').innerHTML =
+    '<div style="text-align:center;padding:20px;color:var(--text-muted)">' +
+    '<p style="margin-bottom:12px;color:var(--text-heading);font-size:15px">⚠️ 自动搜索暂不可用</p>' +
+    '<p style="margin-bottom:16px">点击下方按钮在新标签页打开「' + keywordRaw + '」的搜索结果</p>' +
+    '</div>';
+}
+
+function closeVideoModal() {
+  document.getElementById('video-overlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function closeVideoModal() {
@@ -819,3 +865,5 @@ loadData(); updatePlanBadge(); loadSharedPlan();
 </script>
 </body>
 </html>
+
+
